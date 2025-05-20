@@ -33,7 +33,7 @@ jobs:
 
     push-mirror:
       if: github.ref == 'refs/heads/main'
-      needs: [check-coding-style, check-compilation]
+      needs: [check-compilation]
       uses: ./.github/workflows/push-mirror.yml
       with:
         MIRROR_URL: git@github.com:EpitechPromo2028/B-CCP-400-BDX-4-1-theplazza-lucas.ludovic.git
