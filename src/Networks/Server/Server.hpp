@@ -26,7 +26,7 @@ namespace Network {
         Server();
         ~Server() override;
 
-        ClientInfo_t acceptClient();
+        ClientInfo_t acceptClient(ClientId id);
 
         [[nodiscard]] bool send(const std::string &data) override;
         [[nodiscard]] bool receive() override;
@@ -40,5 +40,6 @@ namespace Network {
        private:
         std::map<ClientId, int> _clients;
         std::string _data;
+        ClientId _nextId = 0;
     };
 }  // namespace Network
