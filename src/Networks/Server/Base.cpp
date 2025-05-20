@@ -27,7 +27,7 @@ Network::Server::~Server()
 void Network::Server::closeClient(Network::ClientId id)
 {
     if (!this->_clients[id]) {
-        throw NetworkError("Unable to close client", "Server");
+        return;
     }
     ::close(this->_clients[id]);
     this->_clients.erase(id);
