@@ -26,7 +26,7 @@ Network::Server::~Server()
 
 void Network::Server::closeClient(Network::ClientId id)
 {
-    if (!this->_clients[id]) {
+    if (this->_clients.find(id) == this->_clients.end()) {
         return;
     }
     ::close(this->_clients[id]);
@@ -35,12 +35,22 @@ void Network::Server::closeClient(Network::ClientId id)
 
 void Network::Server::closeAll()
 {
-    for (const auto &it: this->_clients) {
+    for (const auto &it : this->_clients) {
         this->closeClient(it.first);
     }
     this->_clients.clear();
 }
 
-Network::ClientInfo_t Network::Server::acceptClient()
+Network::ClientInfo_t Network::Server::acceptClient(Network::ClientId id)
 {
+    int sv[2];
+
+    if (this->_clients.find(id) != this->_clients.end())
+        throw NetworkError("ClientId alreade in use", "Server");
+    if (socketpair(AF_UNIX, SOCK_STREAM, 0, sv) == -1)
+        throw NetworkError("Socketpair failed to add client", "Server");
+
+    this->_clients.insert({id, sv[0]});
+
+    return {id, sv[1]};
 }
