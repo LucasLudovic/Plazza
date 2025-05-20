@@ -8,16 +8,41 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
+#include <queue>
+#include <memory>
+#include <sstream>
+#include <regex>
+#include <unistd.h>
 
 #include "PlazzaError.hpp"
+#include "OrderError.hpp"
+#include "Data.hpp"
+#include "SFMLRenderer.hpp"
+#include "ShellRenderer.hpp"
 
 namespace plazza {
     class Plazza
     {
         public:
-            Plazza(int argc, const char *const *argv);
+            Plazza(int &argc, const char *const *&argv);
             ~Plazza() = default;
 
             void run();
+
+        private:
+            void errorHandling(int &argc, const char *const *&argv);
+            void parseOrder(const std::string &order);
+
+            void createKitchen(float cookingTimeMultiplier, int cooks, int time);
+
+            float _cookingTimeMultiplier;
+            size_t _cooks;
+            size_t _time;
+
+            std::unique_ptr<IRenderer> _renderer;
+
+            std::vector<pid_t> _kitchens;
+            std::queue<order_t> _orders;
     };
 }
