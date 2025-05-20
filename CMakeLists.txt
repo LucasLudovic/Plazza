@@ -15,11 +15,15 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wl,--export-dynamic")
 # Directories
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 set(ERRORS_DIR ${SRC_DIR}/Errors)
+set(UTILS_DIR ${SRC_DIR}/Utils)
+set(RENDERER_DIR ${SRC_DIR}/Renderer)
 
 # Include directories
 include_directories (
     ${SRC_DIR}
     ${ERRORS_DIR}
+    ${UTILS_DIR}
+    ${RENDERER_DIR}
 )
 
 # Souces setter
@@ -27,6 +31,12 @@ set(SOURCES
     ${SRC_DIR}/Main.cpp
 
     ${SRC_DIR}/Plazza.cpp
+    ${SRC_DIR}/Data.cpp
+
+    ${RENDERER_DIR}/ShellRenderer.cpp
+    ${RENDERER_DIR}/SFMLRenderer.cpp
+
+    ${ERRORS_DIR}/AError.cpp
 )
 
 # Creating Core binary
