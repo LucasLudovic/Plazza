@@ -15,5 +15,4 @@ plazza::Plazza::Plazza(int argc, const char *const *argv)
 
 void plazza::Plazza::run()
 {
-    
 }
