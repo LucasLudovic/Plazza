@@ -27,6 +27,7 @@ set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 set(ERRORS_DIR ${SRC_DIR}/Errors)
 set(UTILS_DIR ${SRC_DIR}/Utils)
 set(RENDERER_DIR ${SRC_DIR}/Renderer)
+set(NETWORK_DIR ${SRC_DIR}/Network)
 
 # Include directories
 include_directories (
@@ -34,6 +35,7 @@ include_directories (
     ${ERRORS_DIR}
     ${UTILS_DIR}
     ${RENDERER_DIR}
+    ${NETWORK_DIR}
 )
 
 # Souces setter
@@ -45,6 +47,12 @@ set(SOURCES
 
     ${RENDERER_DIR}/ShellRenderer.cpp
     ${RENDERER_DIR}/SFMLRenderer.cpp
+
+    ${NETWORK_DIR}/ANetwork.cpp
+    ${NETWORK_DIR}/Client/Base.cpp
+    ${NETWORK_DIR}/Client/Communication.cpp
+    ${NETWORK_DIR}/Server/Base.cpp
+    ${NETWORK_DIR}/Server/Communication.cpp
 
     ${ERRORS_DIR}/AError.cpp
 )

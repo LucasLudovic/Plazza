@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Networks/ANetwork.hpp"
+#include "Network/ANetwork.hpp"
 #include <map>
 #include <poll.h>
 #include <vector>
