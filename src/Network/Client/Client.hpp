@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "Networks/ANetwork.hpp"
-#include "Networks/Server/Server.hpp"
+#include "Network/ANetwork.hpp"
+#include "Network/Server/Server.hpp"
 
 namespace Network {
     class Client : public ANetwork {

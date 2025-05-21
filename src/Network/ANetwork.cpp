@@ -8,6 +8,11 @@
 #include "ANetwork.hpp"
 #include <unistd.h>
 
+Network::ANetwork::~ANetwork()
+{
+    this->close();
+}
+
 void Network::ANetwork::close()
 {
     if (this->_fd > 0) {
