@@ -29,6 +29,7 @@ namespace plazza {
         "fantasia"
     };
     PizzaType convertPizzaType(const std::string &str);
+    std::string convertPizzaType(PizzaType pizzaType);
 
     enum PizzaSize {
         S = 1,
@@ -45,6 +46,9 @@ namespace plazza {
         "XXL"
     };
     PizzaSize convertPizzaSize(const std::string &str);
+    std::string convertPizzaSize(PizzaSize pizzaSize);
+
+    unsigned int unPow(unsigned int nb, unsigned int pow = 2);
 
     typedef struct order_s {
         PizzaType type;
