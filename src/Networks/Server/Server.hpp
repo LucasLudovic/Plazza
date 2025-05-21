@@ -28,7 +28,7 @@ namespace Network {
 
         ClientInfo_t acceptClient(ClientId id);
 
-        [[nodiscard]] bool send(const std::string &data) override;
+        [[nodiscard]] bool send(const data_t &data) override;
         [[nodiscard]] bool receive() override;
 
         [[nodiscard]] bool sendTo(ClientId id, const data_t &data);
