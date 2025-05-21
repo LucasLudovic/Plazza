@@ -25,7 +25,7 @@ namespace plazza {
             void setIngredient(Ingredient ingredient);
             void setIngredient(std::vector<Ingredient> ingredient);
 
-            void consumeIngredient(Ingredient ingredient, int quantity = 1);
+            void consumeIngredient(Ingredient ingredient, size_t quantity = 1);
 
         private:
             PizzaType _name;
