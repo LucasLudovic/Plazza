@@ -8,7 +8,9 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 #include <algorithm>
+#include <cmath>
 
 #include "OrderError.hpp"
 #include "StringUtils.hpp"
@@ -20,6 +22,12 @@ namespace plazza {
         Americana = 4,
         Fantasia = 8
     };
+    const std::vector<std::string> pizzaTypeString = {
+        "regina",
+        "margarita",
+        "americana",
+        "fantasia"
+    };
     PizzaType convertPizzaType(const std::string &str);
 
     enum PizzaSize {
@@ -28,6 +36,13 @@ namespace plazza {
         L = 4,
         XL = 8,
         XXL = 16
+    };
+    const std::vector<std::string> pizzaSizeString = {
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
     };
     PizzaSize convertPizzaSize(const std::string &str);
 

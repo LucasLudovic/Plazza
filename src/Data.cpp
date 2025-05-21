@@ -13,28 +13,18 @@ plazza::PizzaType plazza::convertPizzaType(const std::string &str)
     trim(pizzaType);
     std::transform(pizzaType.begin(), pizzaType.end(), pizzaType.begin(), ::tolower);
 
-    if (pizzaType == "regina")
-        return Regina;
-    if (pizzaType == "margarita")
-        return Margarita;
-    if (pizzaType == "americana")
-        return Americana;
-    if (pizzaType == "fantasia")
-        return Fantasia;
+    for (size_t i = 0; i < pizzaTypeString.size(); i++) {
+        if (pizzaType == pizzaTypeString[i])
+            return static_cast<plazza::PizzaType>(std::pow(2, i));
+    }
     throw plazza::OrderError("Invalid pizza type", "Plazza");
 }
 
 plazza::PizzaSize plazza::convertPizzaSize(const std::string &str)
 {
-    if (str == "S")
-        return S;
-    if (str == "M")
-        return M;
-    if (str == "L")
-        return L;
-    if (str == "XL")
-        return XL;
-    if (str == "XXL")
-        return XXL;
+    for (size_t i = 0; i < pizzaSizeString.size(); i++) {
+        if (str == pizzaSizeString[i])
+            return static_cast<plazza::PizzaSize>(std::pow(2, i));
+    }
     throw plazza::OrderError("Invalid pizza size", "Plazza");
 }

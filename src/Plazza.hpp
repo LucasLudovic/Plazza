@@ -9,7 +9,7 @@
 
 #include <iostream>
 #include <vector>
-#include <queue>
+#include <list>
 #include <memory>
 #include <sstream>
 #include <regex>
@@ -32,8 +32,11 @@ namespace plazza {
 
         private:
             void errorHandling(int &argc, const char *const *&argv);
-            void parseOrder(const std::string &order);
 
+            void parseOrder(const std::string &order);
+            void attributeOrder();
+
+            void ReevaluateKitchens(const unsigned int &nbKitchenNeeded);
             void createKitchen(float cookingTimeMultiplier, int cooks, int time);
 
             float _cookingTimeMultiplier;
@@ -43,6 +46,6 @@ namespace plazza {
             std::unique_ptr<IRenderer> _renderer;
 
             std::vector<pid_t> _kitchens;
-            std::queue<order_t> _orders;
+            std::vector<order_t> _orders;
     };
 }
