@@ -9,7 +9,8 @@
 
 #include "Networks/ANetwork.hpp"
 #include <map>
-#include <sched.h>
+#include <poll.h>
+#include <vector>
 
 
 namespace Network {
@@ -33,13 +34,16 @@ namespace Network {
 
         [[nodiscard]] bool sendTo(ClientId id, const data_t &data);
 
-        [[nodiscard]] const std::string &getData() const;
+        [[nodiscard]] const data_t &getData() const;
         void closeClient(ClientId id);
         void closeAll();
 
        private:
         std::map<ClientId, int> _clients;
-        std::string _data;
+        data_t _data;
         ClientId _nextId = 0;
+
+        std::vector<struct pollfd> _getPfds();
+        std::vector<ClientId> _getIds();
     };
 }  // namespace Network
