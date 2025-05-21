@@ -12,7 +12,6 @@
 #include <poll.h>
 #include <vector>
 
-
 namespace Network {
 
     using ClientId = pid_t;
@@ -34,14 +33,13 @@ namespace Network {
 
         [[nodiscard]] bool sendTo(ClientId id, const data_t &data);
 
-        [[nodiscard]] const data_t &getData() const;
+        [[nodiscard]] const data_t &getData() const override;
         void closeClient(ClientId id);
         void closeAll();
 
        private:
         std::map<ClientId, int> _clients;
         data_t _data;
-        ClientId _nextId = 0;
 
         std::vector<struct pollfd> _getPfds();
         std::vector<ClientId> _getIds();

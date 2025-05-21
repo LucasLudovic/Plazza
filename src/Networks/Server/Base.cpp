@@ -55,7 +55,7 @@ Network::ClientInfo_t Network::Server::acceptClient(Network::ClientId id)
     return {id, sv[1]};
 }
 
-const data_t &Network::Server::getData() const
+const Network::data_t &Network::Server::getData() const
 {
     return this->_data;
 }
