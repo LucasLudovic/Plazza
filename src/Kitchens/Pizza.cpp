@@ -35,7 +35,7 @@ void plazza::Pizza::setIngredient(std::vector<Ingredient> ingredients)
  * @param quantity The amount of the ingredient to consume
  * @throws KitchenError If the ingredient is not found or insufficient quantity is available
  */
-void plazza::Pizza::consumeIngredient(Ingredient ingredient, int quantity)
+void plazza::Pizza::consumeIngredient(Ingredient ingredient, size_t quantity)
 {
     if (_ingredients.find(ingredient) == _ingredients.end())
         throw KitchenError("Ingredient not found", "Plazza");
