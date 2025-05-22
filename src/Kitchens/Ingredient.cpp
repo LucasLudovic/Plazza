@@ -38,6 +38,17 @@ void plazza::Stock::useIngredients(const std::vector<Ingredient> &ingredients)
     }
 }
 
+bool plazza::Stock::hasIngredients(const std::vector<Ingredient> &ingredient)
+{
+    std::lock_guard<std::mutex> lock(this->_stockMutex);
+    for (const auto &ingredient : ingredient) {
+        if (this->_ingredients[ingredient] <= 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
 /**
  * @brief Converts a string representation of an ingredient to its corresponding enum value
  *
