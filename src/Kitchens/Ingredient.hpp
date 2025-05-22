@@ -33,5 +33,5 @@ namespace plazza {
         "chief love"
     };
     Ingredient convertIngredient(const std::string &str);
-    std::string convertIngredient(Ingredient ingredient);
+    std::string convertIngredient(Ingredient &ingredient);
 }

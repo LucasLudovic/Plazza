@@ -45,7 +45,10 @@ namespace plazza {
 
             std::unique_ptr<IRenderer> _renderer;
 
+            size_t _lastID;
+            std::vector<size_t> _kitchensIDs;
             std::vector<pid_t> _kitchens;
+
             std::vector<order_t> _orders;
     };
 }
