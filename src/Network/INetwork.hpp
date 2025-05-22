@@ -22,7 +22,6 @@ namespace Network {
        public:
         virtual ~INetwork() = default;
 
-        [[nodiscard]] virtual bool send(const data_t &msg) = 0;
         [[nodiscard]] virtual bool receive() = 0;
         [[nodiscard]] virtual const data_t &getData() const = 0;
         virtual void close() = 0;

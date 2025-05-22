@@ -5,6 +5,7 @@
 // Communication channel
 //
 
+#include "Data.hpp"
 #include "NetworkError.hpp"
 #include "Server.hpp"
 #include <sys/socket.h>
@@ -46,7 +47,7 @@ bool Network::Server::receive()
     return true;
 }
 
-bool Network::Server::send(const data_t &data)
+bool Network::Server::send(const plazza::order_t &data)
 {
     bool success = true;
 
@@ -58,7 +59,7 @@ bool Network::Server::send(const data_t &data)
     return success;
 }
 
-bool Network::Server::sendTo(int id, const data_t &data)
+bool Network::Server::sendTo(int id, const plazza::order_t &data)
 {
     if (this->_clients.find(id) == this->_clients.end())
         return false;
