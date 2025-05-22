@@ -8,6 +8,8 @@
 #pragma once
 
 #include "Data.hpp"
+#include <map>
+#include <mutex>
 
 namespace plazza {
     enum Ingredient {
@@ -21,17 +23,23 @@ namespace plazza {
         GOAT_CHEESE = 128,
         CHIEF_LOVE = 256
     };
-    const std::vector<std::string> ingredientString = {
-        "doe",
-        "tomato",
-        "gruyere",
-        "ham",
-        "mushrooms",
-        "steak",
-        "eggplant",
-        "goat cheese",
-        "chief love"
+
+    const std::vector<std::string> ingredientString = {"doe", "tomato",
+        "gruyere", "ham", "mushrooms", "steak", "eggplant", "goat cheese",
+        "chief love"};
+
+    class Stock {
+       public:
+        Stock();
+
+        void refill();
+        void useIngredients(const std::vector<Ingredient> &ingredients);
+
+       private:
+        std::map<Ingredient, int> _ingredients;
+        std::mutex _stockMutex;
     };
+
     Ingredient convertIngredient(const std::string &str);
     std::string convertIngredient(Ingredient &ingredient);
-}
+}  // namespace plazza

@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "Kitchens/Ingredient.hpp"
 #include "Network/Server/Server.hpp"
 
 namespace plazza {
@@ -23,5 +24,8 @@ namespace plazza {
         float _cookingTimeMultiplier;
         int _nbCooks;
         int _restockTime;
+
+        std::vector<Ingredient> getIngredientsForPizza(PizzaType type);
+        int getCookingTime(PizzaType type);
     };
 }  // namespace plazza

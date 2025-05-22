@@ -7,6 +7,7 @@
 
 #include "Kitchens/Kitchen.hpp"
 #include "Network/Server/Server.hpp"
+#include "Network/Client/Client.hpp"
 
 plazza::Kitchen::Kitchen(Network::ClientInfo_t &client_info, int cookingMultiplier,
             int nbCooks, int restockTime)
@@ -19,4 +20,6 @@ plazza::Kitchen::Kitchen(Network::ClientInfo_t &client_info, int cookingMultipli
 
 void plazza::Kitchen::run()
 {
+    Network::Client client(this->_fd);
+    Stock stock;
 }
