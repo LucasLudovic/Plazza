@@ -34,6 +34,7 @@ namespace plazza {
 
         void refill();
         void useIngredients(const std::vector<Ingredient> &ingredients);
+        bool hasIngredients(const std::vector<Ingredient>& ingredient);
 
        private:
         std::map<Ingredient, int> _ingredients;
