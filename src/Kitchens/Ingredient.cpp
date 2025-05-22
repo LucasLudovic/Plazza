@@ -6,6 +6,7 @@
 */
 
 #include "Ingredient.hpp"
+#include "KitchenError.hpp"
 
 plazza::Stock::Stock()
 {
@@ -69,6 +70,7 @@ plazza::Ingredient plazza::convertIngredient(const std::string &str)
         if (ingredient == ingredientString[i])
             return static_cast<plazza::Ingredient>(std::pow(2, i));
     }
+    throw KitchenError("Can't convert ingredient from str", "Ingredient");
 }
 
 std::string plazza::convertIngredient(plazza::Ingredient &ingredient)
@@ -77,4 +79,5 @@ std::string plazza::convertIngredient(plazza::Ingredient &ingredient)
         if (ingredient == static_cast<plazza::Ingredient>(std::pow(2, i)))
             return ingredientString[i];
     }
+    throw KitchenError("Can't convert ingredient to str", "Ingredient");
 }

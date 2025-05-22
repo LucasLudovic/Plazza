@@ -198,10 +198,7 @@ void plazza::Plazza::createKitchen(float cookingTimeMultiplier, int cooks, int t
     }
 
     this->_server.closeAll();
-    Kitchen kitchen(info);
+    Kitchen kitchen(info, cookingTimeMultiplier, cooks, time);
     kitchen.run();
-    (void)cookingTimeMultiplier;
-    (void)cooks;
-    (void)time;
     exit(0);
 }

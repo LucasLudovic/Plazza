@@ -5,6 +5,7 @@
 // Cooking
 //
 
+#include "CookError.hpp"
 #include "Cooks.hpp"
 
 int plazza::Cooks::_getCookingTime(PizzaType type)
@@ -25,4 +26,24 @@ int plazza::Cooks::_getCookingTime(PizzaType type)
             break;
     }
     return static_cast<int>(timeMs * this->_multiplier);
+}
+
+std::vector<plazza::Ingredient> plazza::Cooks::getIngredientsForPizza(
+    PizzaType type)
+{
+    switch (type) {
+        case PizzaType::Margarita:
+            return {Ingredient::DOE, Ingredient::TOMATO, Ingredient::GRUYERE};
+        case PizzaType::Regina:
+            return {Ingredient::DOE, Ingredient::TOMATO, Ingredient::GRUYERE,
+                Ingredient::HAM, Ingredient::MUSHROOMS};
+        case PizzaType::Americana:
+            return {Ingredient::DOE, Ingredient::TOMATO, Ingredient::GRUYERE,
+                Ingredient::STEAK};
+        case PizzaType::Fantasia:
+            return {Ingredient::DOE, Ingredient::TOMATO, Ingredient::EGGPLANT,
+                Ingredient::GOAT_CHEESE, Ingredient::CHIEF_LOVE};
+        default:
+            throw CookError("Unable to get ingredient for pizza", "Cook");
+    }
 }

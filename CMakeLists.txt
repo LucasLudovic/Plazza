@@ -56,6 +56,10 @@ set(SOURCES
     ${NETWORK_DIR}/Server/Communication.cpp
 
     ${KITCHEN_DIR}/Base.cpp
+    ${KITCHEN_DIR}/Ingredient.cpp
+    ${KITCHEN_DIR}/Pizza.cpp
+    ${KITCHEN_DIR}/Cooks/Cooks.cpp
+    ${KITCHEN_DIR}/Cooks/Cooking.cpp
 
     ${ERRORS_DIR}/AError.cpp
 )
