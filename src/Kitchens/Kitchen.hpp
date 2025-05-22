@@ -12,12 +12,16 @@
 namespace plazza {
     class Kitchen {
        public:
-        Kitchen(Network::ClientInfo_t &info);
+        Kitchen(Network::ClientInfo_t &info, int cookingMultiplier,
+            int nbCooks, int restockTime);
         ~Kitchen() = default;
 
         void run();
 
        private:
         int _fd;
+        float _cookingTimeMultiplier;
+        int _nbCooks;
+        int _restockTime;
     };
 }  // namespace plazza
