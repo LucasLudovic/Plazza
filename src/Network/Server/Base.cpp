@@ -24,7 +24,7 @@ Network::Server::~Server()
     this->closeAll();
 }
 
-void Network::Server::closeClient(Network::ClientId id)
+void Network::Server::closeClient(int id)
 {
     if (this->_clients.find(id) == this->_clients.end()) {
         return;
@@ -41,18 +41,19 @@ void Network::Server::closeAll()
     this->_clients.clear();
 }
 
-Network::ClientInfo_t Network::Server::acceptClient(Network::ClientId id)
+Network::ClientInfo_t Network::Server::acceptClient()
 {
     int sv[2];
 
-    if (this->_clients.find(id) != this->_clients.end())
+    if (this->_clients.find(this->_nextId) != this->_clients.end())
         throw NetworkError("ClientId alreade in use", "Server");
     if (socketpair(AF_UNIX, SOCK_STREAM, 0, sv) == -1)
         throw NetworkError("Socketpair failed to add client", "Server");
 
-    this->_clients.insert({id, sv[0]});
+    this->_clients.insert({this->_nextId, sv[0]});
+    this->_nextId += 1;
 
-    return {id, sv[1]};
+    return {this->_nextId - 1, sv[1]};
 }
 
 const Network::data_t &Network::Server::getData() const
