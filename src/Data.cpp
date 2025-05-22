@@ -20,7 +20,7 @@ plazza::PizzaType plazza::convertPizzaType(const std::string &str)
     throw OrderError("Invalid pizza type", "Plazza");
 }
 
-std::string plazza::convertPizzaType(plazza::PizzaType pizzaType)
+std::string plazza::convertPizzaType(plazza::PizzaType &pizzaType)
 {
     for (size_t i = 0; i < pizzaTypeString.size(); i++) {
         if (pizzaType == static_cast<plazza::PizzaType>(std::pow(2, i)))
@@ -38,7 +38,7 @@ plazza::PizzaSize plazza::convertPizzaSize(const std::string &str)
     throw OrderError("Invalid pizza size", "Plazza");
 }
 
-std::string plazza::convertPizzaSize(plazza::PizzaSize pizzaSize)
+std::string plazza::convertPizzaSize(plazza::PizzaSize &pizzaSize)
 {
     for (size_t i = 0; i < pizzaSizeString.size(); i++) {
         if (pizzaSize == static_cast<plazza::PizzaSize>(std::pow(2, i)))

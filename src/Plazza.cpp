@@ -24,6 +24,8 @@ plazza::Plazza::Plazza(int &argc, const char *const *&argv)
         _renderer = std::make_unique<ShellRenderer>();
 
     _renderer->init();
+
+    _lastID = 0;
 }
 
 void plazza::Plazza::run()
@@ -135,13 +137,13 @@ void plazza::Plazza::attributeOrder()
     ReevaluateKitchens(nbKitchen);
 
     unsigned int orderIndex = 0;
-    for (auto &kitchen : _kitchens) {
+    for (auto &kitchen : _kitchensIDs) {
         for (unsigned int i = 0; i < 2 * _cooks; i++) {
             if (orderIndex >= _orders.size())
                 break;
             order_t &order = _orders[orderIndex];
 
-            std::cout << "Order " << order.type << " " << order.size << " x" << order.quantity <<
+            std::cout << "Order " << convertPizzaType(order.type) << " " << convertPizzaSize(order.size) <<
             " sent to kitchen " << kitchen << std::endl;
             order.quantity--;
             if (order.quantity == 0)
@@ -180,12 +182,14 @@ void plazza::Plazza::ReevaluateKitchens(const unsigned int &nbKitchenNeeded)
  */
 void plazza::Plazza::createKitchen(float cookingTimeMultiplier, int cooks, int time)
 {
+    size_t id = _lastID++;
     pid_t pid = fork();
 
     if (pid == -1)
         throw plazza::PlazzaError("Failed to create kitchen", "Plazza");
     else if (pid != 0) {
-        std::cout << "Kitchen created (pid: " << pid << ")" << std::endl;
+        std::cout << "Kitchen created (id: " << id << ")" << std::endl;;
+        _kitchensIDs.push_back(id);
         _kitchens.push_back(pid);
         return;
     }

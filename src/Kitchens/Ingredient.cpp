@@ -28,7 +28,7 @@ plazza::Ingredient plazza::convertIngredient(const std::string &str)
     }
 }
 
-std::string plazza::convertIngredient(plazza::Ingredient ingredient)
+std::string plazza::convertIngredient(plazza::Ingredient &ingredient)
 {
     for (size_t i = 0; i < ingredientString.size(); i++) {
         if (ingredient == static_cast<plazza::Ingredient>(std::pow(2, i)))
