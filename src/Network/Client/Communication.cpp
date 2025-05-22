@@ -6,11 +6,12 @@
 //
 
 #include "Client.hpp"
+#include "Data.hpp"
 #include "NetworkError.hpp"
 #include <sys/socket.h>
 #include <unistd.h>
 
-bool Network::Client::send(const data_t &data)
+bool Network::Client::send(const plazza::order_t &data)
 {
     return ::write(_fd, &data, sizeof(data)) == sizeof(data);
 }

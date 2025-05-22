@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "Data.hpp"
 #include "Network/ANetwork.hpp"
 #include <map>
 #include <poll.h>
@@ -26,10 +27,10 @@ namespace Network {
 
         ClientInfo_t acceptClient();
 
-        [[nodiscard]] bool send(const data_t &data) override;
+        [[nodiscard]] bool send(const plazza::order_t &data);
         [[nodiscard]] bool receive() override;
 
-        [[nodiscard]] bool sendTo(int id, const data_t &data);
+        [[nodiscard]] bool sendTo(int id, const plazza::order_t &data);
 
         [[nodiscard]] const data_t &getData() const override;
         void closeClient(int id);

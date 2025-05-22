@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "Data.hpp"
 #include "Network/ANetwork.hpp"
 #include "Network/Server/Server.hpp"
 
@@ -15,7 +16,7 @@ namespace Network {
        public:
         Client(int fd);
 
-        [[nodiscard]] bool send(const data_t &data) override;
+        [[nodiscard]] bool send(const plazza::order_t &data);
         [[nodiscard]] bool receive() override;
 
         [[nodiscard]] const data_t &getData() const override;
