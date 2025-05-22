@@ -6,6 +6,9 @@
 */
 
 #include "Plazza.hpp"
+#include "Kitchens/Kitchen.hpp"
+#include "Network/Client/Client.hpp"
+#include "Network/Server/Server.hpp"
 
 plazza::Plazza::Plazza(int &argc, const char *const *&argv)
 {
@@ -182,19 +185,21 @@ void plazza::Plazza::ReevaluateKitchens(const unsigned int &nbKitchenNeeded)
  */
 void plazza::Plazza::createKitchen(float cookingTimeMultiplier, int cooks, int time)
 {
-    size_t id = _lastID++;
+    Network::ClientInfo_t info = this->_server.acceptClient();
+
     pid_t pid = fork();
 
     if (pid == -1)
         throw plazza::PlazzaError("Failed to create kitchen", "Plazza");
-    else if (pid != 0) {
-        std::cout << "Kitchen created (id: " << id << ")" << std::endl;;
-        _kitchensIDs.push_back(id);
+    if (pid != 0) {
+        std::cout << "Kitchen created (pid: " << pid << ", id: " << info.id << ")" << std::endl;
         _kitchens.push_back(pid);
         return;
     }
 
-    // TODO: kitchen method
+    this->_server.closeAll();
+    Kitchen kitchen(info);
+    kitchen.run();
     (void)cookingTimeMultiplier;
     (void)cooks;
     (void)time;

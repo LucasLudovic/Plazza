@@ -14,10 +14,8 @@
 
 namespace Network {
 
-    using ClientId = pid_t;
-
     typedef struct ClientInfo_s {
-        ClientId id;
+        int id;
         int clientFd;
     } ClientInfo_t;
 
@@ -26,22 +24,23 @@ namespace Network {
         Server();
         ~Server() override;
 
-        ClientInfo_t acceptClient(ClientId id);
+        ClientInfo_t acceptClient();
 
         [[nodiscard]] bool send(const data_t &data) override;
         [[nodiscard]] bool receive() override;
 
-        [[nodiscard]] bool sendTo(ClientId id, const data_t &data);
+        [[nodiscard]] bool sendTo(int id, const data_t &data);
 
         [[nodiscard]] const data_t &getData() const override;
-        void closeClient(ClientId id);
+        void closeClient(int id);
         void closeAll();
 
        private:
-        std::map<ClientId, int> _clients;
+        std::map<int, int> _clients;
         data_t _data;
+        int _nextId = 0;
 
         std::vector<struct pollfd> _getPfds();
-        std::vector<ClientId> _getIds();
+        std::vector<int> _getIds();
     };
 }  // namespace Network

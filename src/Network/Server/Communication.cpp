@@ -19,7 +19,7 @@ bool Network::Server::receive()
     const int timeout = 1000;
 
     std::vector<struct pollfd> pfds = this->_getPfds();
-    std::vector <ClientId> ids = this->_getIds();
+    std::vector <int> ids = this->_getIds();
 
     int ret = poll(pfds.data(), pfds.size(), timeout);
 
@@ -58,7 +58,7 @@ bool Network::Server::send(const data_t &data)
     return success;
 }
 
-bool Network::Server::sendTo(ClientId id, const data_t &data)
+bool Network::Server::sendTo(int id, const data_t &data)
 {
     if (this->_clients.find(id) == this->_clients.end())
         return false;
@@ -81,9 +81,9 @@ std::vector<struct pollfd> Network::Server::_getPfds()
     return pfds;
 }
 
-std::vector<Network::ClientId> Network::Server::_getIds()
+std::vector<int> Network::Server::_getIds()
 {
-    std::vector<ClientId> ids;
+    std::vector<int> ids;
 
     for (const auto &[clientId, fd]: this->_clients) {
         ids.push_back(clientId);

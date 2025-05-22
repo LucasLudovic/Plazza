@@ -7,14 +7,17 @@
 
 #pragma once
 
+#include "Network/Server/Server.hpp"
+
 namespace plazza {
     class Kitchen {
        public:
-        Kitchen();
+        Kitchen(Network::ClientInfo_t &info);
         ~Kitchen() = default;
 
         void run();
 
        private:
+        int _fd;
     };
 }  // namespace plazza

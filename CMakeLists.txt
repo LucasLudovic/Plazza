@@ -27,6 +27,7 @@ set(ERRORS_DIR ${SRC_DIR}/Errors)
 set(UTILS_DIR ${SRC_DIR}/Utils)
 set(RENDERER_DIR ${SRC_DIR}/Renderer)
 set(NETWORK_DIR ${SRC_DIR}/Network)
+set(KITCHEN_DIR ${SRC_DIR}/Kitchens)
 
 # Include directories
 include_directories (
@@ -35,6 +36,7 @@ include_directories (
     ${UTILS_DIR}
     ${RENDERER_DIR}
     ${NETWORK_DIR}
+    ${KITCHEN_DIR}
 )
 
 # Souces setter
@@ -52,6 +54,8 @@ set(SOURCES
     ${NETWORK_DIR}/Client/Communication.cpp
     ${NETWORK_DIR}/Server/Base.cpp
     ${NETWORK_DIR}/Server/Communication.cpp
+
+    ${KITCHEN_DIR}/Base.cpp
 
     ${ERRORS_DIR}/AError.cpp
 )
