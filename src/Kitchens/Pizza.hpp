@@ -9,8 +9,8 @@
 
 #include <map>
 
-#include "KitchenError.hpp"
 #include "Ingredient.hpp"
+#include "Data.hpp"
 
 namespace plazza {
     class Pizza
@@ -19,8 +19,8 @@ namespace plazza {
             Pizza(PizzaType &name, PizzaSize &size) : _name(name), _size(size) {}
             ~Pizza() = default;
 
-            std::string getType() const { return convertPizzaType(_name); }
-            std::string getSize() const { return convertPizzaSize(_size); }
+            // std::string getType() const { return convertPizzaType(_name); }
+            // std::string getSize() const { return convertPizzaSize(_size); }
 
             void setIngredient(Ingredient ingredient);
             void setIngredient(std::vector<Ingredient> ingredient);

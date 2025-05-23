@@ -6,6 +6,7 @@
 */
 
 #include "Pizza.hpp"
+#include "KitchenError.hpp"
 
 /**
  * @brief Set the quantity of a specific ingredient in the pizza

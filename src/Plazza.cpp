@@ -140,7 +140,7 @@ void plazza::Plazza::attributeOrder()
     ReevaluateKitchens(nbKitchen);
 
     unsigned int orderIndex = 0;
-    for (auto &kitchen : _kitchensIDs) {
+    for (auto &kitchen : this->_kitchens) {
         for (unsigned int i = 0; i < 2 * _cooks; i++) {
             if (orderIndex >= _orders.size())
                 break;
