@@ -149,7 +149,7 @@ void plazza::Plazza::attributeOrder()
             std::cout << "Order " << convertPizzaType(order.type) << " " << convertPizzaSize(order.size) <<
             " sent to kitchen " << kitchen << std::endl;
             order.quantity--;
-            this->_server.send(order);
+            this->_server.sendTo(kitchen, order);
             if (order.quantity == 0)
                 orderIndex++;
         }
@@ -194,11 +194,10 @@ void plazza::Plazza::createKitchen(float cookingTimeMultiplier, int cooks, int t
         throw plazza::PlazzaError("Failed to create kitchen", "Plazza");
     if (pid != 0) {
         std::cout << "Kitchen created (pid: " << pid << ", id: " << info.id << ")" << std::endl;
-        _kitchens.push_back(pid);
+        _kitchens.push_back(info.id);
         return;
     }
 
-    this->_server.closeAll();
     Kitchen kitchen(info, cookingTimeMultiplier, cooks, time);
     kitchen.run();
     exit(0);

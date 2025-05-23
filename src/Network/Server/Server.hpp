@@ -30,9 +30,9 @@ namespace Network {
         bool send(const plazza::order_t &data);
         [[nodiscard]] bool receive() override;
 
-        [[nodiscard]] bool sendTo(int id, const plazza::order_t &data);
+        bool sendTo(int id, const plazza::order_t &data);
 
-        [[nodiscard]] const data_t &getData() const override;
+        [[nodiscard]] const data_t &getData() const;
         void closeClient(int id);
         void closeAll();
 

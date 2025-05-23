@@ -23,7 +23,6 @@ namespace Network {
         virtual ~INetwork() = default;
 
         [[nodiscard]] virtual bool receive() = 0;
-        [[nodiscard]] virtual const data_t &getData() const = 0;
         virtual void close() = 0;
     };
 }  // namespace Network

@@ -36,7 +36,7 @@ plazza::Cooks::Cooks(
 
                 Pizza pizza(order.type, order.size);
 
-                auto ingredients = getIngredientsForPizza(order.type);
+                auto ingredients = _getIngredientsForPizza(order.type);
                 if (this->_stock.hasIngredients(ingredients)) {
                     this->_stock.useIngredients(ingredients);
                     this->_activeCooks += 1;
@@ -50,7 +50,7 @@ plazza::Cooks::Cooks(
                         throw CookError(
                             "Failed to send completed order", "Cooks");
                     }
-
+                    std::cout << "Order completed for " << i << std::endl;
                     this->_activeCooks -= 1;
                     continue;
                 }
@@ -62,4 +62,14 @@ plazza::Cooks::Cooks(
             }
         });
     }
+}
+
+unsigned plazza::Cooks::getActiveCooks() const
+{
+    return this->_activeCooks.load();
+}
+
+const std::queue<plazza::order_t> &plazza::Cooks::getOrders() const
+{
+    return this->_orders;
 }

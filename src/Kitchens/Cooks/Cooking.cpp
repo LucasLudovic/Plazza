@@ -28,7 +28,7 @@ int plazza::Cooks::_getCookingTime(PizzaType type)
     return static_cast<int>(timeMs * this->_multiplier);
 }
 
-std::vector<plazza::Ingredient> plazza::Cooks::getIngredientsForPizza(
+std::vector<plazza::Ingredient> plazza::Cooks::_getIngredientsForPizza(
     PizzaType type)
 {
     switch (type) {
@@ -46,4 +46,19 @@ std::vector<plazza::Ingredient> plazza::Cooks::getIngredientsForPizza(
         default:
             throw CookError("Unable to get ingredient for pizza", "Cook");
     }
+}
+
+bool plazza::Cooks::acceptMoreOrders(unsigned maxCapacity)
+{
+    std::lock_guard<std::mutex> lock(this->_ordersMutex);
+    return this->_orders.size() < maxCapacity;
+}
+
+void plazza::Cooks::addOrder(const plazza::order_t &order)
+{
+    {
+        std::lock_guard<std::mutex> lock(this->_ordersMutex);
+        this->_orders.push(order);
+    }
+    condition.notify_one();
 }
