@@ -1,8 +1,8 @@
 //
 // EPITECH PROJECT, 2025
-// Network
+// CookError
 // File description:
-// Network
+// CookError
 //
 
 #pragma once
@@ -10,10 +10,10 @@
 #include "AError.hpp"
 
 namespace plazza {
-    class NetworkError : public AError
+    class CookError : public AError
     {
         public:
-            NetworkError(const std::string &msg, const std::string &where)
+            CookError(const std::string &msg, const std::string &where)
                 noexcept : AError(msg, where) {};
     };
 }

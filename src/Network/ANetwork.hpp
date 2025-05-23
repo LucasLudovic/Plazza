@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Networks/INetwork.hpp"
+#include "Network/INetwork.hpp"
 
 namespace Network {
     class ANetwork : public INetwork {

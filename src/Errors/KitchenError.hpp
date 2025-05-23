@@ -10,10 +10,10 @@
 #include "AError.hpp"
 
 namespace plazza {
-    class NetworkError : public AError
+    class KitchenError : public AError
     {
         public:
-            NetworkError(const std::string &msg, const std::string &where)
+            KitchenError(const std::string &msg, const std::string &where)
                 noexcept : AError(msg, where) {};
     };
 }

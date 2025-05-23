@@ -6,6 +6,9 @@
 */
 
 #include "Plazza.hpp"
+#include "Kitchens/Kitchen.hpp"
+#include "Network/Client/Client.hpp"
+#include "Network/Server/Server.hpp"
 
 plazza::Plazza::Plazza(int &argc, const char *const *&argv)
 {
@@ -24,6 +27,8 @@ plazza::Plazza::Plazza(int &argc, const char *const *&argv)
         _renderer = std::make_unique<ShellRenderer>();
 
     _renderer->init();
+
+    _lastID = 0;
 }
 
 void plazza::Plazza::run()
@@ -34,11 +39,11 @@ void plazza::Plazza::run()
         if (_renderer->shouldTakeOrder()) {
             try {
                 parseOrder(_renderer->takeOrder());
+                attributeOrder();
             } catch (const plazza::OrderError &e) {
                 _renderer->showError(e.where() + std::string(" Error: ") + e.what());
             }
         }
-
         _renderer->render();
     }
 }
@@ -85,6 +90,9 @@ void plazza::Plazza::errorHandling(int &argc, const char *const *&argv)
  */
 void plazza::Plazza::parseOrder(const std::string &order)
 {
+    if (order.empty())
+        return;
+
     std::stringstream ss(order);
     std::string orderStr;
 
@@ -104,15 +112,64 @@ void plazza::Plazza::parseOrder(const std::string &order)
             throw plazza::OrderError("Invalid quantity format: " + quantityStr, "Order");
         }
 
-        std::cout << "Name: " << name << ", Size: " << size << ", Quantity: " << quantity << std::endl;
-
         order_t order = {
             convertPizzaType(name),
             convertPizzaSize(size),
             quantity
         };
 
-        _orders.push(order);
+        _orders.push_back(order);
+    }
+}
+
+void plazza::Plazza::attributeOrder()
+{
+    if (_orders.empty())
+        return;
+
+    unsigned int nbPizza = 0;
+
+    for (auto &order : _orders)
+        nbPizza += order.quantity;
+
+    std::cout << "Number of pizzas: " << nbPizza << std::endl;
+    unsigned int nbKitchen = nbPizza / (2 * _cooks);
+    if (nbPizza < 2 * _cooks || nbPizza % (2 * _cooks) != 0)
+        nbKitchen++;
+
+    ReevaluateKitchens(nbKitchen);
+
+    unsigned int orderIndex = 0;
+    for (auto &kitchen : this->_kitchens) {
+        for (unsigned int i = 0; i < 2 * _cooks; i++) {
+            if (orderIndex >= _orders.size())
+                break;
+            order_t &order = _orders[orderIndex];
+
+            std::cout << "Order " << convertPizzaType(order.type) << " " << convertPizzaSize(order.size) <<
+            " sent to kitchen " << kitchen << std::endl;
+            order.quantity--;
+            this->_server.send(order);
+            if (order.quantity == 0)
+                orderIndex++;
+        }
+    }
+    _orders.clear();
+    std::cout << "All orders sent" << std::endl;
+}
+
+void plazza::Plazza::ReevaluateKitchens(const unsigned int &nbKitchenNeeded)
+{
+    std::cout << "Reevaluating kitchens " << "(" << nbKitchenNeeded << ")" << std::endl;
+    if (nbKitchenNeeded <= _kitchens.size()) {
+        for (unsigned int i = nbKitchenNeeded; i < _kitchens.size(); i++) {
+            // kill(_kitchens[i], SIGKILL);
+            _kitchens.erase(_kitchens.begin() + i);
+            std::cout << "Kitchen " << i << " killed" << std::endl;
+        }
+    } else {
+        for (unsigned int i = _kitchens.size(); i < nbKitchenNeeded; i++)
+            createKitchen(_cookingTimeMultiplier, _cooks, _time);
     }
 }
 
@@ -129,18 +186,20 @@ void plazza::Plazza::parseOrder(const std::string &order)
  */
 void plazza::Plazza::createKitchen(float cookingTimeMultiplier, int cooks, int time)
 {
+    Network::ClientInfo_t info = this->_server.acceptClient();
+
     pid_t pid = fork();
 
-    if (pid == 0) {
-        std::cout << "Kitchen created" << std::endl;
+    if (pid == -1)
+        throw plazza::PlazzaError("Failed to create kitchen", "Plazza");
+    if (pid != 0) {
+        std::cout << "Kitchen created (pid: " << pid << ", id: " << info.id << ")" << std::endl;
         _kitchens.push_back(pid);
         return;
     }
-    else if (pid == -1)
-        throw plazza::PlazzaError("Failed to create kitchen", "Plazza");
 
-    // TODO: create kitchen
-    (void)cookingTimeMultiplier;
-    (void)cooks;
-    (void)time;
+    this->_server.closeAll();
+    Kitchen kitchen(info, cookingTimeMultiplier, cooks, time);
+    kitchen.run();
+    exit(0);
 }

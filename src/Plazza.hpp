@@ -8,41 +8,46 @@
 #pragma once
 
 #include <iostream>
-#include <vector>
-#include <queue>
+#include <list>
 #include <memory>
-#include <sstream>
 #include <regex>
+#include <sstream>
 #include <unistd.h>
+#include <vector>
 
-#include "PlazzaError.hpp"
-#include "OrderError.hpp"
 #include "Data.hpp"
+#include "Network/Server/Server.hpp"
+#include "OrderError.hpp"
+#include "PlazzaError.hpp"
 #include "SFMLRenderer.hpp"
 #include "ShellRenderer.hpp"
 
 namespace plazza {
-    class Plazza
-    {
-        public:
-            Plazza(int &argc, const char *const *&argv);
-            ~Plazza() = default;
+    class Plazza {
+       public:
+        Plazza(int &argc, const char *const *&argv);
+        ~Plazza() = default;
 
-            void run();
+        void run();
 
-        private:
-            void errorHandling(int &argc, const char *const *&argv);
-            void parseOrder(const std::string &order);
+       private:
+        void errorHandling(int &argc, const char *const *&argv);
 
-            void createKitchen(float cookingTimeMultiplier, int cooks, int time);
+        void parseOrder(const std::string &order);
+        void attributeOrder();
 
-            float _cookingTimeMultiplier;
-            size_t _cooks;
-            size_t _time;
+        void ReevaluateKitchens(const unsigned int &nbKitchenNeeded);
+        void createKitchen(float cookingTimeMultiplier, int cooks, int time);
 
-            std::unique_ptr<IRenderer> _renderer;
+        float _cookingTimeMultiplier;
+        size_t _cooks;
+        size_t _time;
 
-            std::vector<pid_t> _kitchens;
-            std::queue<order_t> _orders;
+        std::unique_ptr<IRenderer> _renderer;
+
+        size_t _lastID;
+        Network::Server _server;
+        std::vector<pid_t> _kitchens;
+        std::vector<order_t> _orders;
     };
-}
+}  // namespace plazza

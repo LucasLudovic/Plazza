@@ -21,12 +21,13 @@ set(CMAKE_SHARED_LIBRARY_PREFIX "")
 add_compile_options(-Wall -Wextra -Werror -pedantic)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wl,--export-dynamic")
 
-
 # Directories
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 set(ERRORS_DIR ${SRC_DIR}/Errors)
 set(UTILS_DIR ${SRC_DIR}/Utils)
 set(RENDERER_DIR ${SRC_DIR}/Renderer)
+set(NETWORK_DIR ${SRC_DIR}/Network)
+set(KITCHEN_DIR ${SRC_DIR}/Kitchens)
 
 # Include directories
 include_directories (
@@ -34,6 +35,8 @@ include_directories (
     ${ERRORS_DIR}
     ${UTILS_DIR}
     ${RENDERER_DIR}
+    ${NETWORK_DIR}
+    ${KITCHEN_DIR}
 )
 
 # Souces setter
@@ -45,6 +48,18 @@ set(SOURCES
 
     ${RENDERER_DIR}/ShellRenderer.cpp
     ${RENDERER_DIR}/SFMLRenderer.cpp
+
+    ${NETWORK_DIR}/ANetwork.cpp
+    ${NETWORK_DIR}/Client/Base.cpp
+    ${NETWORK_DIR}/Client/Communication.cpp
+    ${NETWORK_DIR}/Server/Base.cpp
+    ${NETWORK_DIR}/Server/Communication.cpp
+
+    ${KITCHEN_DIR}/Base.cpp
+    ${KITCHEN_DIR}/Ingredient.cpp
+    ${KITCHEN_DIR}/Pizza.cpp
+    ${KITCHEN_DIR}/Cooks/Cooks.cpp
+    ${KITCHEN_DIR}/Cooks/Cooking.cpp
 
     ${ERRORS_DIR}/AError.cpp
 )

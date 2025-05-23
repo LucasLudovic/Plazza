@@ -20,6 +20,8 @@
 
 #include "IRenderer.hpp"
 
+#include <unistd.h>
+
 namespace plazza {
     class ShellRenderer : public IRenderer
     {
