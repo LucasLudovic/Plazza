@@ -27,7 +27,7 @@ namespace Network {
 
         ClientInfo_t acceptClient();
 
-        [[nodiscard]] bool send(const plazza::order_t &data);
+        bool send(const plazza::order_t &data);
         [[nodiscard]] bool receive() override;
 
         [[nodiscard]] bool sendTo(int id, const plazza::order_t &data);

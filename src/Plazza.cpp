@@ -149,6 +149,7 @@ void plazza::Plazza::attributeOrder()
             std::cout << "Order " << convertPizzaType(order.type) << " " << convertPizzaSize(order.size) <<
             " sent to kitchen " << kitchen << std::endl;
             order.quantity--;
+            this->_server.send(order);
             if (order.quantity == 0)
                 orderIndex++;
         }
