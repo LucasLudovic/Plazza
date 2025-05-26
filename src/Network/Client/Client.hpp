@@ -19,9 +19,9 @@ namespace Network {
         [[nodiscard]] bool send(const plazza::order_t &data);
         [[nodiscard]] bool receive() override;
 
-        [[nodiscard]] const data_t &getData() const override;
+        [[nodiscard]] const plazza::order_t &getData() const;
 
        private:
-        data_t _data;
+        plazza::order_t _data;
     };
 }  // namespace Network

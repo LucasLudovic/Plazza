@@ -19,6 +19,13 @@ namespace plazza {
     class Cooks {
        public:
         Cooks(int nbCooks, Stock &stock, float multiplier, Network::Client &client);
+
+        bool acceptMoreOrders(unsigned maxCapacity);
+        
+        void addOrder(const plazza::order_t &order);
+        unsigned getActiveCooks() const;
+        const std::queue<plazza::order_t> &getOrders() const;
+
        private:
         int _nbCooks;
         float _multiplier;
@@ -34,7 +41,7 @@ namespace plazza {
 
         std::mutex _ordersMutex;
 
-        std::vector<Ingredient> getIngredientsForPizza(PizzaType type);
+        std::vector<Ingredient> _getIngredientsForPizza(PizzaType type);
         int _getCookingTime(PizzaType type);
     };
 }  // namespace plazza

@@ -37,4 +37,36 @@ void plazza::Kitchen::run()
             }
         }
     });
+
+    auto lastActivity = std::chrono::steady_clock::now();
+    const unsigned maxCapacity = 2 * this->_nbCooks;
+
+    while (true) {
+        auto now = std::chrono::steady_clock::now();
+        auto timeSinceLastActivity =
+            std::chrono::duration_cast<std::chrono::seconds>(
+                now - lastActivity);
+
+        if (timeSinceLastActivity.count() >= 5 &&
+            cooks.getActiveCooks() == 0 && cooks.getOrders().size() == 0) {
+            break;
+        }
+
+        if (client.receive()) {
+            const auto &order = client.getData();
+            lastActivity = now;
+
+            for (size_t i = 0; i < order.quantity; i += 1) {
+                if (cooks.acceptMoreOrders(maxCapacity))
+                    cooks.addOrder(order);
+                else
+                    break;
+            }
+        }
+    }
+
+    stop.store(true);
+    if (restockThread.joinable()) {
+        restockThread.join();
+    }
 }
