@@ -135,6 +135,7 @@ void plazza::Plazza::parseOrder(std::string &order)
     if (order.empty())
         return;
 
+    std::cout << "Est bien rentre avec order = " << order << '\n';
     std::stringstream ss(order);
     std::string orderStr;
 

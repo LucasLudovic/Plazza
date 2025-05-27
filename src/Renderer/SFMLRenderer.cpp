@@ -6,27 +6,84 @@
 */
 
 #include "SFMLRenderer.hpp"
+#include "SFML/Graphics/Color.hpp"
+#include "SFML/Window/Event.hpp"
+#include "SFML/Window/Keyboard.hpp"
+#include <cctype>
 #include <iostream>
 
 void plazza::SFMLRenderer::init()
 {
     _window.create(sf::VideoMode({800, 600}), "Plazza");
+    if (!this->_font.loadFromFile("JetBrainsMonoNerdFont-Medium.ttf"))
+        exit(84);
+    this->_CommandText.setFont(this->_font);
+    this->_OrderText.setFont(this->_font);
 }
 
 void plazza::SFMLRenderer::update()
 {
     sf::Event event;
 
+    std::map<sf::Keyboard::Key, char> keyPress = {{sf::Keyboard::Num0, '0'},
+        {sf::Keyboard::Num1, '1'}, {sf::Keyboard::Num2, '2'},
+        {sf::Keyboard::Num3, '3'}, {sf::Keyboard::Num4, '4'},
+        {sf::Keyboard::Num5, '5'}, {sf::Keyboard::Num6, '6'},
+        {sf::Keyboard::Num7, '7'}, {sf::Keyboard::Num8, '8'},
+        {sf::Keyboard::Num9, '9'}, {sf::Keyboard::A, 'a'},
+        {sf::Keyboard::B, 'b'}, {sf::Keyboard::C, 'c'}, {sf::Keyboard::D, 'd'},
+        {sf::Keyboard::E, 'e'}, {sf::Keyboard::F, 'f'}, {sf::Keyboard::G, 'g'},
+        {sf::Keyboard::H, 'h'}, {sf::Keyboard::I, 'i'}, {sf::Keyboard::J, 'j'},
+        {sf::Keyboard::K, 'k'}, {sf::Keyboard::L, 'l'}, {sf::Keyboard::M, 'm'},
+        {sf::Keyboard::N, 'n'}, {sf::Keyboard::O, 'o'}, {sf::Keyboard::P, 'p'},
+        {sf::Keyboard::Q, 'q'}, {sf::Keyboard::R, 'r'}, {sf::Keyboard::S, 's'},
+        {sf::Keyboard::T, 't'}, {sf::Keyboard::U, 'u'}, {sf::Keyboard::V, 'v'},
+        {sf::Keyboard::W, 'w'}, {sf::Keyboard::X, 'x'}, {sf::Keyboard::Y, 'y'},
+        {sf::Keyboard::Z, 'z'}, {sf::Keyboard::Space, ' '}};
+
     while (_window.pollEvent(event)) {
         if (event.type == sf::Event::Closed)
             _window.close();
+        if (event.type == sf::Event::KeyPressed) {
+            if (event.key.code == sf::Keyboard::Enter) {
+                if (!this->_order.empty()) {
+                    this->_takeOrder = true;
+                }
+            } else if (event.key.code == sf::Keyboard::BackSpace) {
+                if (!this->_order.empty()) {
+                    this->_order.pop_back();
+                }
+            } else {
+                for (auto &it : keyPress) {
+                    if (event.key.code == it.first &&
+                        sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+                        this->_order += std::toupper(it.second);
+                        continue;
+                    }
+                    if (event.key.code == it.first) {
+                        this->_order += it.second;
+                        continue;
+                    }
+                }
+            }
+        }
     }
 }
 
 void plazza::SFMLRenderer::render()
 {
-    _window.clear();
-    _window.display();
+    this->_CommandText.setString("Enter Your Order: ");
+    this->_CommandText.setCharacterSize(12);
+    this->_CommandText.setFillColor(sf::Color::White);
+    this->_CommandText.setPosition({10, 10});
+    this->_OrderText.setString(this->_order.c_str());
+    this->_OrderText.setCharacterSize(12);
+    this->_OrderText.setFillColor(sf::Color::White);
+    this->_OrderText.setPosition({10, 20});
+    this->_window.clear();
+    this->_window.draw(this->_CommandText);
+    this->_window.draw(this->_OrderText);
+    this->_window.display();
 }
 
 std::string &plazza::SFMLRenderer::takeOrder()
