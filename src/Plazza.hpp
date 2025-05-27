@@ -36,6 +36,7 @@ namespace plazza {
        private:
         void errorHandling(int &argc, const char *const *&argv);
 
+        void receiveDoneOrders();
         void updateKitchens();
         void parseOrder(std::string &order);
         void attributeOrder();

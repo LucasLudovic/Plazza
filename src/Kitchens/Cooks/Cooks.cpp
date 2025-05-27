@@ -48,7 +48,6 @@ plazza::Cooks::Cooks(
                         throw CookError(
                             "Failed to send completed order", "Cooks");
                     }
-                    std::cout << "Order completed for " << i << std::endl;
                     this->_activeCooks -= 1;
                     continue;
                 }

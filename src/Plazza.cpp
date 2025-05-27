@@ -92,15 +92,26 @@ void plazza::Plazza::updateKitchens()
         return;
 
     if (int id = this->_server.receive() != -1) {
+        std::cout << "Received order from kitchen: " << id << std::endl;
         const order_t order = this->_server.getData();
 
-        _kitchens[id].erase(std::find(_kitchens[id].begin(), _kitchens[id].end(), order));
+        auto it = _kitchens.find(id);
+        if (it != _kitchens.end()) {
+            auto &orders = it->second;
+            auto orderIt = std::find(orders.begin(), orders.end(), order);
+            if (orderIt != orders.end())
+                orders.erase(orderIt);
+
+            if (it->second.empty())
+                _kitchens.erase(it);
+        }
+
         std::cout << "Order completed: " << order.type << " " << order.size << " from kitchen: " << id << std::endl;
     }
 
     std::vector<int> kitchenIDs = this->_server.getIds();
     for (auto &kitchenID : kitchenIDs) {
-        if (_kitchens.find(kitchenID) == _kitchens.end() || _kitchens[kitchenID].empty())
+        if (_kitchens.find(kitchenID) == _kitchens.end())
             _kitchens.erase(kitchenID);
     }
 }
@@ -150,16 +161,28 @@ void plazza::Plazza::parseOrder(std::string &order)
     order.clear();
 }
 
+/**
+ * @brief Distributes pizza orders to available kitchens
+ *
+ * Manages the allocation of pizza orders to existing kitchens or creates new kitchens
+ * when necessary. Calculates the number of remaining kitchen slots and creates additional
+ * kitchens if the current kitchen capacity is insufficient to handle pending orders.
+ *
+ * Iterates through existing kitchens, sending orders to available slots and tracking
+ * order distribution. Creates new kitchens based on the number of pending pizzas and
+ * kitchen cooking capacity.
+ *
+ * @note Prints diagnostic information about order distribution and kitchen creation
+ */
 void plazza::Plazza::attributeOrder()
 {
     if (_orders.empty())
         return;
 
     unsigned int nbRemainingSlots = 0;
-    std::cout << "kitchens: " << this->_kitchens.size() << std::endl;
     if (!this->_server.getIds().empty()) {
         for (auto &kitchen : _kitchens) {
-            nbRemainingSlots += 2 * _cooks - kitchen.second.size();
+            nbRemainingSlots += 2 * _cooks - (kitchen.second.empty() ? 0 : kitchen.second.size());
         }
     }
 
@@ -178,12 +201,13 @@ void plazza::Plazza::attributeOrder()
     }
 
     for (auto &kitchen : this->_kitchens) {
-        std::cout << "Kitchen " << kitchen.first << " has " << kitchen.second.size() << " orders" << std::endl;
-        for (unsigned int i = kitchen.second.size() - 1; !_orders.empty() || i < 2 * _cooks; i++) {
+        std::cout << "Kitchen " << kitchen.first << " has " << 2 * _cooks - kitchen.second.size() << " free slots" << std::endl;
+        unsigned int kitchenSize = (kitchen.second.empty() ? 0 : kitchen.second.size());
+        for (unsigned int i = kitchenSize; i < 2 * _cooks && !_orders.empty(); i++) {
             order_t &order = _orders.front();
             _orders.pop();
 
-            std::cout << "Order " << convertPizzaType(order.type) << " " << convertPizzaSize(order.size) <<
+            std::cout << "Order " << order.type << " " << order.size <<
             " sent to kitchen " << kitchen.first << std::endl;
             this->_server.sendTo(kitchen.first, order);
             kitchen.second.push_back(order);
