@@ -6,6 +6,10 @@
 */
 
 #include "Plazza.hpp"
+#include "Kitchens/Kitchen.hpp"
+#include "Network/Client/Client.hpp"
+#include "Network/Server/Server.hpp"
+#include <iostream>
 
 plazza::Plazza::Plazza(int &argc, const char *const *&argv)
 {
@@ -16,12 +20,10 @@ plazza::Plazza::Plazza(int &argc, const char *const *&argv)
     _time = std::stoi(argv[3]);
 
     _server = Network::Server();
-
     _renderer = nullptr;
-    for (int i = 4; i < argc; i++) {
-        if (std::string(argv[i]) == "-g") {
-            _renderer = std::make_unique<SFMLRenderer>();
-        }
+
+    if (argv[4] != nullptr && std::string(argv[4]) == "-g") {
+        _renderer = std::make_unique<SFMLRenderer>();
     }
     if (!_renderer)
         _renderer = std::make_unique<ShellRenderer>();
@@ -40,7 +42,8 @@ void plazza::Plazza::run()
                 parseOrder(_renderer->takeOrder());
                 attributeOrder();
             } catch (const plazza::OrderError &e) {
-                _renderer->showError(e.where() + std::string(" Error: ") + e.what());
+                _renderer->showError(
+                    e.where() + std::string(" Error: ") + e.what());
             }
         }
         _renderer->render();
@@ -72,7 +75,8 @@ void plazza::Plazza::errorHandling(int &argc, const char *const *&argv)
     for (int i = 1; i < 4; i++) {
         for (size_t j = 0; argv[i][j]; j++) {
             if (!std::isdigit(argv[i][0]))
-                throw plazza::PlazzaError("Arguments must be numbers", "Plazza");
+                throw plazza::PlazzaError(
+                    "Arguments must be numbers", "Plazza");
         }
     }
 }
@@ -141,13 +145,15 @@ void plazza::Plazza::parseOrder(std::string &order)
         orderStream >> name >> size >> quantityStr;
 
         if (quantityStr.empty() || quantityStr[0] != 'x')
-            throw plazza::OrderError("Invalid quantity format: " + quantityStr, "Order");
+            throw plazza::OrderError(
+                "Invalid quantity format: " + quantityStr, "Order");
 
         unsigned int quantity = 0;
         try {
             quantity = std::stoul(quantityStr.substr(1));
-        } catch (const std::exception& e) {
-            throw plazza::OrderError("Invalid quantity format: " + quantityStr, "Order");
+        } catch (const std::exception &e) {
+            throw plazza::OrderError(
+                "Invalid quantity format: " + quantityStr, "Order");
         }
 
         for (unsigned int i = 0; i < quantity; i++) {
@@ -157,7 +163,6 @@ void plazza::Plazza::parseOrder(std::string &order)
             });
         }
     }
-
     order.clear();
 }
 
@@ -227,7 +232,8 @@ void plazza::Plazza::attributeOrder()
  * @param time Kitchen processing time
  * @throws PlazzaError if kitchen process creation fails
  */
-void plazza::Plazza::createKitchen(float cookingTimeMultiplier, int cooks, int time)
+void plazza::Plazza::createKitchen(
+    float cookingTimeMultiplier, int cooks, int time)
 {
     Network::ClientInfo_t info = this->_server.acceptClient();
 

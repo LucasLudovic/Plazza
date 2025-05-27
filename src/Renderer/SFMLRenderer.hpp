@@ -20,7 +20,7 @@ namespace plazza {
 
             void init() override;
 
-            bool shouldClose() override { return _window.isOpen(); }
+            bool shouldClose() override { return !_window.isOpen(); }
 
             void update() override;
 
@@ -29,7 +29,7 @@ namespace plazza {
             bool shouldTakeOrder() override { return _takeOrder; }
             std::string &takeOrder() override;
 
-            void showError(const std::string &message);
+            void showError(const std::string &message) override;
 
         private:
             bool _takeOrder;

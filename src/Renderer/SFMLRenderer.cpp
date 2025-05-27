@@ -6,10 +6,11 @@
 */
 
 #include "SFMLRenderer.hpp"
+#include <iostream>
 
 void plazza::SFMLRenderer::init()
 {
-    _window.create(sf::VideoMode(800, 600), "Plazza");
+    _window.create(sf::VideoMode({800, 600}), "Plazza");
 }
 
 void plazza::SFMLRenderer::update()
