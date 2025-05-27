@@ -8,8 +8,10 @@
 #pragma once
 
 #include "IRenderer.hpp"
+#include "SFML/Graphics/Color.hpp"
 #include "SFML/Graphics/Font.hpp"
 #include "SFML/Graphics/Text.hpp"
+#include "SFML/System/Vector2.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -39,7 +41,6 @@ namespace plazza {
 
             sf::RenderWindow _window;
             sf::Font _font;
-            sf::Text _CommandText;
-            sf::Text _OrderText;
+            void _displayText(std::string str, sf::Vector2f pos, sf::Color color);
     };
 }

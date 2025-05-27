@@ -6,19 +6,18 @@
 */
 
 #include "SFMLRenderer.hpp"
+#include "PlazzaError.hpp"
 #include "SFML/Graphics/Color.hpp"
+#include "SFML/Graphics/Text.hpp"
 #include "SFML/Window/Event.hpp"
 #include "SFML/Window/Keyboard.hpp"
 #include <cctype>
-#include <iostream>
 
 void plazza::SFMLRenderer::init()
 {
-    _window.create(sf::VideoMode({800, 600}), "Plazza");
-    if (!this->_font.loadFromFile("JetBrainsMonoNerdFont-Medium.ttf"))
-        exit(84);
-    this->_CommandText.setFont(this->_font);
-    this->_OrderText.setFont(this->_font);
+    this->_window.create(sf::VideoMode({800, 600}), "Plazza");
+    if (!this->_font.loadFromFile("./assets/fonts/JetBrainsMonoNerdFont-Medium.ttf"))
+        throw plazza::PlazzaError("Failed to load font", "SFML");
 }
 
 void plazza::SFMLRenderer::update()
@@ -70,19 +69,23 @@ void plazza::SFMLRenderer::update()
     }
 }
 
+void plazza::SFMLRenderer::_displayText(std::string str, sf::Vector2f pos, sf::Color color)
+{
+    sf::Text text;
+
+    text.setFont(this->_font);
+    text.setString(str.c_str());
+    text.setFillColor(color);
+    text.setCharacterSize(12);
+    text.setPosition(pos);
+    this->_window.draw(text);
+}
+
 void plazza::SFMLRenderer::render()
 {
-    this->_CommandText.setString("Enter Your Order: ");
-    this->_CommandText.setCharacterSize(12);
-    this->_CommandText.setFillColor(sf::Color::White);
-    this->_CommandText.setPosition({10, 10});
-    this->_OrderText.setString(this->_order.c_str());
-    this->_OrderText.setCharacterSize(12);
-    this->_OrderText.setFillColor(sf::Color::White);
-    this->_OrderText.setPosition({10, 20});
     this->_window.clear();
-    this->_window.draw(this->_CommandText);
-    this->_window.draw(this->_OrderText);
+    this->_displayText("Enter your Order :", {10, 10}, sf::Color::White);
+    this->_displayText(this->_order, {10, 30}, sf::Color::White);
     this->_window.display();
 }
 
