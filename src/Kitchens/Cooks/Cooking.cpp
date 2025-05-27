@@ -12,6 +12,8 @@ int plazza::Cooks::_getCookingTime(PizzaType type)
 {
     int timeMs = 0;
     switch (type) {
+        case PizzaType::NO_PIZZA:
+            throw CookError("Wrong pizza sent", "Cooks");
         case PizzaType::Margarita:
             timeMs = 1000;
             break;

@@ -64,7 +64,8 @@ void plazza::Plazza::run()
 void plazza::Plazza::errorHandling(int &argc, const char *const *&argv)
 {
     if (argc == 2 && std::string(argv[1]) == "-h") {
-        std::cout << "Usage: ./plazza [multiplier] [cooks] [time]" << std::endl;
+        std::cout << "Usage: ./plazza [multiplier] [cooks] [time]"
+                  << std::endl;
         exit(0);
     }
 
@@ -94,8 +95,9 @@ void plazza::Plazza::updateKitchens()
 {
     if (_kitchens.empty())
         return;
+    auto status = this->_server.receive();
+    auto id = status.fd;
 
-    int id = this->_server.receive();
     if (id != -1) {
         std::cout << "Received order from kitchen: " << id << std::endl;
         const order_t order = this->_server.getData();
@@ -104,13 +106,18 @@ void plazza::Plazza::updateKitchens()
         if (it != _kitchens.end()) {
             auto &orders = it->second;
             auto orderIt = std::find(orders.begin(), orders.end(), order);
-            std::cout << "size: " << order.size << "\ntype: " << order.type << "\nkitchen: " << id << std::endl;
+            if (status.status != Network::client_status::OK) {
+                if (orderIt != orders.end()) {
+                    orders.erase(orderIt);
+                }
+                _kitchens.erase(it);
+                std::cout << "kitchen destroyed " << status.fd << std::endl;
+                return;
+            }
+            std::cout << "size: " << order.size << "\ntype: " << order.type
+                      << "\nkitchen: " << id << std::endl;
             if (orderIt != orders.end()) {
                 orders.erase(orderIt);
-            }
-
-            if (it->second.empty()) {
-                _kitchens.erase(it);
             }
         }
     }
@@ -164,10 +171,7 @@ void plazza::Plazza::parseOrder(std::string &order)
         }
 
         for (unsigned int i = 0; i < quantity; i++) {
-            _orders.push({
-                convertPizzaType(name),
-                convertPizzaSize(size)
-            });
+            _orders.push({convertPizzaType(name), convertPizzaSize(size)});
         }
     }
     order.clear();
@@ -194,7 +198,9 @@ void plazza::Plazza::attributeOrder()
     unsigned int nbRemainingSlots = 0;
     if (!this->_server.getIds().empty()) {
         for (auto &kitchen : _kitchens) {
-            nbRemainingSlots += 2 * _cooks - (kitchen.second.empty() ? 0 : kitchen.second.size());
+            nbRemainingSlots +=
+                2 * _cooks -
+                (kitchen.second.empty() ? 0 : kitchen.second.size());
         }
     }
 
@@ -205,15 +211,17 @@ void plazza::Plazza::attributeOrder()
 
         int nbKitchenToCreate = nbPizza / (2 * _cooks);
         if (nbPizza < 2 * (int)_cooks || nbPizza % (2 * (int)_cooks) != 0)
-        nbKitchenToCreate++;
+            nbKitchenToCreate++;
 
         for (int i = 0; i < nbKitchenToCreate; i++)
             createKitchen(_cookingTimeMultiplier, _cooks, _time);
     }
 
     for (auto &kitchen : this->_kitchens) {
-        unsigned int kitchenSize = (kitchen.second.empty() ? 0 : kitchen.second.size());
-        for (unsigned int i = kitchenSize; i < 2 * _cooks && !_orders.empty(); i++) {
+        unsigned int kitchenSize =
+            (kitchen.second.empty() ? 0 : kitchen.second.size());
+        for (unsigned int i = kitchenSize; i < 2 * _cooks && !_orders.empty();
+            i++) {
             order_t &order = _orders.front();
             _orders.pop();
 
