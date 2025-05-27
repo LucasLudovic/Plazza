@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.10)
 project(plazza)
 
-include(FetchContent)
+# include(FetchContent)
 
 # Fetch SFML
-FetchContent_Declare(
-    sfml
-    GIT_REPOSITORY https://github.com/SFML/SFML.git
-    GIT_TAG        2.6.2
-)
-FetchContent_MakeAvailable(sfml)
+# FetchContent_Declare(
+#     sfml
+#     GIT_REPOSITORY https://github.com/SFML/SFML.git
+#     GIT_TAG        2.6.2
+# )
+# FetchContent_MakeAvailable(sfml)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
