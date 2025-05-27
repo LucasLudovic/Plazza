@@ -5,6 +5,7 @@
 // Kitchen base functions
 //
 
+#include "KitchenError.hpp"
 #include "Kitchens/Cooks/Cooks.hpp"
 #include "Kitchens/Kitchen.hpp"
 #include "Network/Client/Client.hpp"
@@ -65,6 +66,8 @@ void plazza::Kitchen::run()
                 break;
         }
     }
+    if (!client.send({NO_PIZZA, S}))
+        throw KitchenError("Unable to close kitchen", "Kitchen");
 
     stop.store(true);
     if (restockThread.joinable()) {

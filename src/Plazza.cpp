@@ -6,6 +6,7 @@
 */
 
 #include "Plazza.hpp"
+#include "Data.hpp"
 #include "Kitchens/Kitchen.hpp"
 #include "Network/Client/Client.hpp"
 #include "Network/Server/Server.hpp"
@@ -106,7 +107,9 @@ void plazza::Plazza::updateKitchens()
         if (it != _kitchens.end()) {
             auto &orders = it->second;
             auto orderIt = std::find(orders.begin(), orders.end(), order);
-            if (status.status != Network::client_status::OK) {
+            std::cout << "Ici" << std::endl;
+            if (status.status != Network::client_status::OK ||
+                order.type == NO_PIZZA) {
                 if (orderIt != orders.end()) {
                     orders.erase(orderIt);
                 }
