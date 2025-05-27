@@ -28,7 +28,7 @@ void plazza::SFMLRenderer::render()
     _window.display();
 }
 
-std::string plazza::SFMLRenderer::takeOrder()
+std::string &plazza::SFMLRenderer::takeOrder()
 {
     _takeOrder = false;
     return _order;

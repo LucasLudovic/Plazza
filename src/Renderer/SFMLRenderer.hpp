@@ -27,7 +27,7 @@ namespace plazza {
             void render() override;
 
             bool shouldTakeOrder() override { return _takeOrder; }
-            std::string takeOrder() override;
+            std::string &takeOrder() override;
 
             void showError(const std::string &message);
 

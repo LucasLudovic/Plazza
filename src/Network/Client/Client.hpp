@@ -17,7 +17,7 @@ namespace Network {
         Client(int fd);
 
         [[nodiscard]] bool send(const plazza::order_t &data);
-        [[nodiscard]] bool receive() override;
+        [[nodiscard]] bool receive();
 
         [[nodiscard]] const plazza::order_t &getData() const;
 

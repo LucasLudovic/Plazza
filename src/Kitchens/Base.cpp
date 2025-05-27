@@ -56,12 +56,10 @@ void plazza::Kitchen::run()
             const auto &order = client.getData();
             lastActivity = now;
 
-            for (size_t i = 0; i < order.quantity; i += 1) {
-                if (cooks.acceptMoreOrders(maxCapacity))
-                    cooks.addOrder(order);
-                else
-                    break;
-            }
+            if (cooks.acceptMoreOrders(maxCapacity))
+                cooks.addOrder(order);
+            else
+                break;
         }
     }
 

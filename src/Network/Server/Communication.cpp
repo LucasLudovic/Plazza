@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <vector>
 
-bool Network::Server::receive()
+int Network::Server::receive()
 {
     if (this->_clients.empty())
         return false;
@@ -20,31 +20,32 @@ bool Network::Server::receive()
     const int timeout = 1000;
 
     std::vector<struct pollfd> pfds = this->_getPfds();
-    std::vector <int> ids = this->_getIds();
+    std::vector <int> ids = this->getIds();
 
     int ret = poll(pfds.data(), pfds.size(), timeout);
 
     if (ret < 0)
         throw plazza::NetworkError("Error in poll", "Server");
     if (ret == 0)
-        return false;
+        return -1;
     size_t index = 0;
     for (auto &it: pfds) {
         if (it.revents & POLLIN) {
-            data_t data;
+            plazza::order_t data;
             size_t received = recv(it.fd, &data, sizeof(data), 0);
 
             if (received == 0) {
                 this->closeClient(ids[index]);
+                return -1;
             }
             if (received != sizeof(data))
                 throw plazza::NetworkError("Data couldn't be correctly sent", "Server");
             this->_data = data;
-            return true;
+            return ids[index];
         }
         index += 1;
     }
-    return true;
+    return -1;
 }
 
 bool Network::Server::send(const plazza::order_t &data)
@@ -82,7 +83,7 @@ std::vector<struct pollfd> Network::Server::_getPfds()
     return pfds;
 }
 
-std::vector<int> Network::Server::_getIds()
+std::vector<int> Network::Server::getIds()
 {
     std::vector<int> ids;
 

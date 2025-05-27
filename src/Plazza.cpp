@@ -6,9 +6,6 @@
 */
 
 #include "Plazza.hpp"
-#include "Kitchens/Kitchen.hpp"
-#include "Network/Client/Client.hpp"
-#include "Network/Server/Server.hpp"
 
 plazza::Plazza::Plazza(int &argc, const char *const *&argv)
 {
@@ -18,6 +15,9 @@ plazza::Plazza::Plazza(int &argc, const char *const *&argv)
     _cooks = std::stoi(argv[2]);
     _time = std::stoi(argv[3]);
 
+    _server = Network::Server();
+
+    _renderer = nullptr;
     for (int i = 4; i < argc; i++) {
         if (std::string(argv[i]) == "-g") {
             _renderer = std::make_unique<SFMLRenderer>();
@@ -27,8 +27,6 @@ plazza::Plazza::Plazza(int &argc, const char *const *&argv)
         _renderer = std::make_unique<ShellRenderer>();
 
     _renderer->init();
-
-    _lastID = 0;
 }
 
 void plazza::Plazza::run()
@@ -36,6 +34,7 @@ void plazza::Plazza::run()
     while (!_renderer->shouldClose()) {
         _renderer->update();
 
+        updateKitchens();
         if (_renderer->shouldTakeOrder()) {
             try {
                 parseOrder(_renderer->takeOrder());
@@ -79,6 +78,34 @@ void plazza::Plazza::errorHandling(int &argc, const char *const *&argv)
 }
 
 /**
+ * @brief Processes a received command from a kitchen
+ *
+ * Handles the completion of an order from a specific kitchen.
+ * If a valid kitchen ID is received, removes the corresponding order
+ * from the kitchen's order list.
+ *
+ * @param id The kitchen ID that has completed an order
+ */
+void plazza::Plazza::updateKitchens()
+{
+    if (_kitchens.empty())
+        return;
+
+    if (int id = this->_server.receive() != -1) {
+        const order_t order = this->_server.getData();
+
+        _kitchens[id].erase(std::find(_kitchens[id].begin(), _kitchens[id].end(), order));
+        std::cout << "Order completed: " << order.type << " " << order.size << " from kitchen: " << id << std::endl;
+    }
+
+    std::vector<int> kitchenIDs = this->_server.getIds();
+    for (auto &kitchenID : kitchenIDs) {
+        if (_kitchens.find(kitchenID) == _kitchens.end() || _kitchens[kitchenID].empty())
+            _kitchens.erase(kitchenID);
+    }
+}
+
+/**
  * @brief Parses a pizza order string into individual pizza orders
  *
  * Processes a semicolon-separated order string, extracting pizza name, size, and quantity.
@@ -88,7 +115,7 @@ void plazza::Plazza::errorHandling(int &argc, const char *const *&argv)
  * @param order A string containing pizza orders in the format "PizzaName Size xQuantity"
  * @throws OrderError if order format is invalid or quantity cannot be parsed
  */
-void plazza::Plazza::parseOrder(const std::string &order)
+void plazza::Plazza::parseOrder(std::string &order)
 {
     if (order.empty())
         return;
@@ -112,14 +139,15 @@ void plazza::Plazza::parseOrder(const std::string &order)
             throw plazza::OrderError("Invalid quantity format: " + quantityStr, "Order");
         }
 
-        order_t order = {
-            convertPizzaType(name),
-            convertPizzaSize(size),
-            quantity
-        };
-
-        _orders.push_back(order);
+        for (unsigned int i = 0; i < quantity; i++) {
+            _orders.push({
+                convertPizzaType(name),
+                convertPizzaSize(size)
+            });
+        }
     }
+
+    order.clear();
 }
 
 void plazza::Plazza::attributeOrder()
@@ -127,50 +155,41 @@ void plazza::Plazza::attributeOrder()
     if (_orders.empty())
         return;
 
-    unsigned int nbPizza = 0;
+    unsigned int nbRemainingSlots = 0;
+    std::cout << "kitchens: " << this->_kitchens.size() << std::endl;
+    if (!this->_server.getIds().empty()) {
+        for (auto &kitchen : _kitchens) {
+            nbRemainingSlots += 2 * _cooks - kitchen.second.size();
+        }
+    }
 
-    for (auto &order : _orders)
-        nbPizza += order.quantity;
+    // if there is no kitchen available, create one
+    int nbPizza = _orders.size() - nbRemainingSlots;
 
     std::cout << "Number of pizzas: " << nbPizza << std::endl;
-    unsigned int nbKitchen = nbPizza / (2 * _cooks);
-    if (nbPizza < 2 * _cooks || nbPizza % (2 * _cooks) != 0)
-        nbKitchen++;
+    if (nbPizza > 0) {
 
-    ReevaluateKitchens(nbKitchen);
+        int nbKitchenToCreate = nbPizza / (2 * _cooks);
+        if (nbPizza < 2 * (int)_cooks || nbPizza % (2 * (int)_cooks) != 0)
+        nbKitchenToCreate++;
 
-    unsigned int orderIndex = 0;
-    for (auto &kitchen : this->_kitchens) {
-        for (unsigned int i = 0; i < 2 * _cooks; i++) {
-            if (orderIndex >= _orders.size())
-                break;
-            order_t &order = _orders[orderIndex];
-
-            std::cout << "Order " << convertPizzaType(order.type) << " " << convertPizzaSize(order.size) <<
-            " sent to kitchen " << kitchen << std::endl;
-            order.quantity--;
-            this->_server.sendTo(kitchen, order);
-            if (order.quantity == 0)
-                orderIndex++;
-        }
-    }
-    _orders.clear();
-    std::cout << "All orders sent" << std::endl;
-}
-
-void plazza::Plazza::ReevaluateKitchens(const unsigned int &nbKitchenNeeded)
-{
-    std::cout << "Reevaluating kitchens " << "(" << nbKitchenNeeded << ")" << std::endl;
-    if (nbKitchenNeeded <= _kitchens.size()) {
-        for (unsigned int i = nbKitchenNeeded; i < _kitchens.size(); i++) {
-            // kill(_kitchens[i], SIGKILL);
-            _kitchens.erase(_kitchens.begin() + i);
-            std::cout << "Kitchen " << i << " killed" << std::endl;
-        }
-    } else {
-        for (unsigned int i = _kitchens.size(); i < nbKitchenNeeded; i++)
+        for (int i = 0; i < nbKitchenToCreate; i++)
             createKitchen(_cookingTimeMultiplier, _cooks, _time);
     }
+
+    for (auto &kitchen : this->_kitchens) {
+        std::cout << "Kitchen " << kitchen.first << " has " << kitchen.second.size() << " orders" << std::endl;
+        for (unsigned int i = kitchen.second.size() - 1; !_orders.empty() || i < 2 * _cooks; i++) {
+            order_t &order = _orders.front();
+            _orders.pop();
+
+            std::cout << "Order " << convertPizzaType(order.type) << " " << convertPizzaSize(order.size) <<
+            " sent to kitchen " << kitchen.first << std::endl;
+            this->_server.sendTo(kitchen.first, order);
+            kitchen.second.push_back(order);
+        }
+    }
+    std::cout << "All orders sent (queue size: " << _orders.size() << ")" << std::endl;
 }
 
 /**
@@ -194,7 +213,7 @@ void plazza::Plazza::createKitchen(float cookingTimeMultiplier, int cooks, int t
         throw plazza::PlazzaError("Failed to create kitchen", "Plazza");
     if (pid != 0) {
         std::cout << "Kitchen created (pid: " << pid << ", id: " << info.id << ")" << std::endl;
-        _kitchens.push_back(info.id);
+        _kitchens[info.id] = {};
         return;
     }
 

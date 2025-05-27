@@ -17,6 +17,8 @@ using plazza::NetworkError;
 Network::Server::Server()
 {
     this->_fd = -1;
+
+    this->_clients.clear();
 }
 
 Network::Server::~Server()
@@ -56,7 +58,7 @@ Network::ClientInfo_t Network::Server::acceptClient()
     return {this->_nextId - 1, sv[1]};
 }
 
-const Network::data_t &Network::Server::getData() const
+const plazza::order_t &Network::Server::getData() const
 {
     return this->_data;
 }

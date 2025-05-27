@@ -28,20 +28,20 @@ namespace Network {
         ClientInfo_t acceptClient();
 
         bool send(const plazza::order_t &data);
-        [[nodiscard]] bool receive() override;
+        [[nodiscard]] int receive();
 
         bool sendTo(int id, const plazza::order_t &data);
 
-        [[nodiscard]] const data_t &getData() const;
+        [[nodiscard]] const plazza::order_t &getData() const;
+        std::vector<int> getIds();
         void closeClient(int id);
         void closeAll();
 
        private:
         std::map<int, int> _clients;
-        data_t _data;
+        plazza::order_t _data;
         int _nextId = 0;
 
         std::vector<struct pollfd> _getPfds();
-        std::vector<int> _getIds();
     };
 }  // namespace Network

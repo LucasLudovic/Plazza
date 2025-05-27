@@ -27,7 +27,10 @@ set(ERRORS_DIR ${SRC_DIR}/Errors)
 set(UTILS_DIR ${SRC_DIR}/Utils)
 set(RENDERER_DIR ${SRC_DIR}/Renderer)
 set(NETWORK_DIR ${SRC_DIR}/Network)
+set(SERVER_DIR ${NETWORK_DIR}/Server)
+set(CLIENT_DIR ${NETWORK_DIR}/Client)
 set(KITCHEN_DIR ${SRC_DIR}/Kitchens)
+set(COOKS_DIR ${KITCHEN_DIR}/Cooks)
 
 # Include directories
 include_directories (
@@ -36,15 +39,18 @@ include_directories (
     ${UTILS_DIR}
     ${RENDERER_DIR}
     ${NETWORK_DIR}
+    ${SERVER_DIR}
+    ${CLIENT_DIR}
     ${KITCHEN_DIR}
+    ${COOKS_DIR}
 )
 
 # Souces setter
 set(SOURCES
     ${SRC_DIR}/Main.cpp
 
-    ${SRC_DIR}/Plazza.cpp
     ${SRC_DIR}/Data.cpp
+    ${SRC_DIR}/Plazza.cpp
 
     ${RENDERER_DIR}/ShellRenderer.cpp
     ${RENDERER_DIR}/SFMLRenderer.cpp

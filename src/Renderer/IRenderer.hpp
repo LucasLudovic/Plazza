@@ -24,7 +24,7 @@ namespace plazza {
             virtual void render() = 0;
 
             virtual bool shouldTakeOrder() = 0;
-            virtual std::string takeOrder() = 0;
+            virtual std::string &takeOrder() = 0;
 
             virtual void showError(const std::string &message) = 0;
     };

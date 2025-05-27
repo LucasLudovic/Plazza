@@ -22,7 +22,6 @@ namespace Network {
        public:
         virtual ~INetwork() = default;
 
-        [[nodiscard]] virtual bool receive() = 0;
         virtual void close() = 0;
     };
 }  // namespace Network

@@ -21,13 +21,16 @@
 #include "IRenderer.hpp"
 
 #include <unistd.h>
+#include <atomic>
+#include <thread>
+#include <mutex>
 
 namespace plazza {
     class ShellRenderer : public IRenderer
     {
         public:
-            ShellRenderer() : _shouldClose(false), _takeOrder(false) {}
-            ~ShellRenderer() = default;
+            ShellRenderer();
+            ~ShellRenderer();
 
             void init() override {}
 
@@ -38,14 +41,18 @@ namespace plazza {
             void render() override;
 
             bool shouldTakeOrder() override { return _takeOrder; }
-            std::string takeOrder() override;
+            std::string &takeOrder() override;
 
             void showError(const std::string &message) { std::cerr << message << std::endl; }
 
         private:
-            bool _shouldClose;
-            bool _takeOrder;
+            std::atomic<bool> _shouldClose;
+            std::atomic<bool> _takeOrder;
 
             std::string _order;
+            std::thread _inputThread;
+            std::mutex _mutex;
+
+            void inputLoop();
     };
 }

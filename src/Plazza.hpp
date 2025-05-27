@@ -14,13 +14,16 @@
 #include <sstream>
 #include <unistd.h>
 #include <vector>
+#include <queue>
+#include <map>
 
 #include "Data.hpp"
-#include "Network/Server/Server.hpp"
 #include "OrderError.hpp"
 #include "PlazzaError.hpp"
 #include "SFMLRenderer.hpp"
 #include "ShellRenderer.hpp"
+#include "Kitchen.hpp"
+#include "Server.hpp"
 
 namespace plazza {
     class Plazza {
@@ -33,10 +36,10 @@ namespace plazza {
        private:
         void errorHandling(int &argc, const char *const *&argv);
 
-        void parseOrder(const std::string &order);
+        void updateKitchens();
+        void parseOrder(std::string &order);
         void attributeOrder();
 
-        void ReevaluateKitchens(const unsigned int &nbKitchenNeeded);
         void createKitchen(float cookingTimeMultiplier, int cooks, int time);
 
         float _cookingTimeMultiplier;
@@ -45,9 +48,8 @@ namespace plazza {
 
         std::unique_ptr<IRenderer> _renderer;
 
-        size_t _lastID;
         Network::Server _server;
-        std::vector<pid_t> _kitchens;
-        std::vector<order_t> _orders;
+        std::map<int, std::vector<order_t>> _kitchens;
+        std::queue<order_t> _orders;
     };
 }  // namespace plazza
