@@ -94,7 +94,6 @@ void plazza::Plazza::updateKitchens()
 {
     if (_kitchens.empty())
         return;
-    auto id = this->_server.receive();
 
     int id = this->_server.receive();
     if (id != -1) {
