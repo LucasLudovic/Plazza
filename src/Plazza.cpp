@@ -97,7 +97,6 @@ void plazza::Plazza::updateKitchens()
 
     int id = this->_server.receive();
     if (id != -1) {
-        std::cout << "Received order from kitchen: " << id << std::endl;
         const order_t order = this->_server.getData();
 
         auto it = _kitchens.find(id);
@@ -191,34 +190,41 @@ void plazza::Plazza::attributeOrder()
         return;
 
     unsigned int nbRemainingSlots = 0;
-    if (!this->_server.getIds().empty()) {
-        for (auto &kitchen : _kitchens) {
-            nbRemainingSlots += 2 * _cooks - (kitchen.second.empty() ? 0 : kitchen.second.size());
-        }
-    }
+    for (auto &kitchen : _kitchens)
+        nbRemainingSlots += 2 * _cooks - kitchen.second.size();
 
-    // if there is no kitchen available, create one
     int nbPizza = _orders.size() - nbRemainingSlots;
-
     if (nbPizza > 0) {
-
         int nbKitchenToCreate = nbPizza / (2 * _cooks);
         if (nbPizza < 2 * (int)_cooks || nbPizza % (2 * (int)_cooks) != 0)
-        nbKitchenToCreate++;
+            nbKitchenToCreate++;
 
         for (int i = 0; i < nbKitchenToCreate; i++)
             createKitchen(_cookingTimeMultiplier, _cooks, _time);
     }
 
-    for (auto &kitchen : this->_kitchens) {
-        unsigned int kitchenSize = (kitchen.second.empty() ? 0 : kitchen.second.size());
-        for (unsigned int i = kitchenSize; i < 2 * _cooks && !_orders.empty(); i++) {
-            order_t &order = _orders.front();
-            _orders.pop();
+    while (!_orders.empty()) {
+        std::vector<std::pair<int, std::vector<order_t>>> sortedKitchens(
+            _kitchens.begin(), _kitchens.end()
+        );
+        std::sort(sortedKitchens.begin(), sortedKitchens.end(), [](auto &a, auto &b) {
+            return a.second.size() < b.second.size();
+        });
 
-            this->_server.sendTo(kitchen.first, order);
-            kitchen.second.push_back(order);
+        bool orderAssigned = false;
+        for (auto &[kitchenId, orders] : sortedKitchens) {
+            if (orders.size() < 2 * _cooks) {
+                order_t order = _orders.front();
+                _orders.pop();
+                _kitchens[kitchenId].push_back(order);
+                _server.sendTo(kitchenId, order);
+                orderAssigned = true;
+                break;
+            }
         }
+
+        if (!orderAssigned)
+            break;
     }
 }
 
