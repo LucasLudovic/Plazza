@@ -10,7 +10,9 @@
 #include "IRenderer.hpp"
 #include "SFML/Graphics/Color.hpp"
 #include "SFML/Graphics/Font.hpp"
+#include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Text.hpp"
+#include "SFML/Graphics/Texture.hpp"
 #include "SFML/System/Vector2.hpp"
 
 #include <SFML/Graphics.hpp>
@@ -41,6 +43,8 @@ namespace plazza {
 
             sf::RenderWindow _window;
             sf::Font _font;
+            sf::Texture _noteTexture;
+            sf::Sprite _noteSprite;
             void _displayText(std::string str, sf::Vector2f pos, sf::Color color);
     };
 }

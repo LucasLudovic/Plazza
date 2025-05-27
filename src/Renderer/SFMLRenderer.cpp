@@ -18,6 +18,9 @@ void plazza::SFMLRenderer::init()
     this->_window.create(sf::VideoMode({800, 600}), "Plazza");
     if (!this->_font.loadFromFile("./assets/fonts/JetBrainsMonoNerdFont-Medium.ttf"))
         throw plazza::PlazzaError("Failed to load font", "SFML");
+    if (!this->_noteTexture.loadFromFile("./assets/note.png"))
+        throw plazza::PlazzaError("Failed to load note", "SFML");
+    this->_noteSprite.setTexture(this->_noteTexture);
 }
 
 void plazza::SFMLRenderer::update()
@@ -76,7 +79,7 @@ void plazza::SFMLRenderer::_displayText(std::string str, sf::Vector2f pos, sf::C
     text.setFont(this->_font);
     text.setString(str.c_str());
     text.setFillColor(color);
-    text.setCharacterSize(12);
+    text.setCharacterSize(10);
     text.setPosition(pos);
     this->_window.draw(text);
 }
@@ -85,7 +88,10 @@ void plazza::SFMLRenderer::render()
 {
     this->_window.clear();
     this->_displayText("Enter your Order :", {10, 10}, sf::Color::White);
-    this->_displayText(this->_order, {10, 30}, sf::Color::White);
+    this->_noteSprite.setPosition({10,10});
+    this->_noteSprite.setScale({0.5, 0.5});
+    this->_window.draw(this->_noteSprite);
+    this->_displayText(this->_order, {55, 92}, sf::Color::Black);
     this->_window.display();
 }
 
