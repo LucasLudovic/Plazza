@@ -53,3 +53,18 @@ std::string &plazza::ShellRenderer::takeOrder()
     _takeOrder = false;
     return _order;
 }
+
+void plazza::ShellRenderer::showStatus(const std::map<int, std::vector<order_t>> &kitchens)
+{
+    if (kitchens.empty()) {
+        std::cout << "No kitchens available" << std::endl;
+        return;
+    }
+
+    for (const auto &kitchen : kitchens) {
+        std::cout << "Kitchen " << kitchen.first << ":" << std::endl;
+        for (const auto &order : kitchen.second) {
+            std::cout << "  " << convertPizzaType(order.type) << "x " << convertPizzaSize(order.size) << std::endl;
+        }
+    }
+}

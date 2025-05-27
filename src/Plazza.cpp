@@ -91,7 +91,8 @@ void plazza::Plazza::updateKitchens()
     if (_kitchens.empty())
         return;
 
-    if (int id = this->_server.receive() != -1) {
+    int id = this->_server.receive();
+    if (id != -1) {
         std::cout << "Received order from kitchen: " << id << std::endl;
         const order_t order = this->_server.getData();
 
@@ -130,6 +131,11 @@ void plazza::Plazza::parseOrder(std::string &order)
 {
     if (order.empty())
         return;
+
+    if (order == "status") {
+        _renderer->showStatus(_kitchens);
+        return;
+    }
 
     std::stringstream ss(order);
     std::string orderStr;
