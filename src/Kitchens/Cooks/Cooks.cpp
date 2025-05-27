@@ -26,7 +26,7 @@ plazza::Cooks::Cooks(
                         return this->_stop || !this->_orders.empty();
                     });
 
-                    if (this->_stop && this->_orders.empty())
+                    if (this->_stop && this->_orders.empty()) 
                         return;
                     order = this->_orders.front();
                     this->_orders.pop();

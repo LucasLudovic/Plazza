@@ -9,6 +9,7 @@
 #include "Kitchens/Kitchen.hpp"
 #include "Network/Client/Client.hpp"
 #include "Network/Server/Server.hpp"
+#include <chrono>
 
 plazza::Kitchen::Kitchen(Network::ClientInfo_t &client_info,
     int cookingMultiplier, int nbCooks, int restockTime)
@@ -47,6 +48,8 @@ void plazza::Kitchen::run()
             std::chrono::duration_cast<std::chrono::seconds>(
                 now - lastActivity);
 
+        if (cooks.getActiveCooks() != 0)
+            lastActivity = std::chrono::steady_clock::now();
         if (timeSinceLastActivity.count() >= 5 &&
             cooks.getActiveCooks() == 0 && cooks.getOrders().size() == 0) {
             break;
@@ -54,7 +57,7 @@ void plazza::Kitchen::run()
 
         if (client.receive()) {
             const auto &order = client.getData();
-            lastActivity = now;
+            lastActivity = std::chrono::steady_clock::now();
 
             if (cooks.acceptMoreOrders(maxCapacity))
                 cooks.addOrder(order);

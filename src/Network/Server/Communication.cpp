@@ -12,10 +12,10 @@
 #include <unistd.h>
 #include <vector>
 
-int Network::Server::receive()
+Network::status_t Network::Server::receive()
 {
     if (this->_clients.empty())
-        return false;
+        return {-1, client_status::NOK};
 
     const int timeout = 1000;
 
@@ -27,7 +27,7 @@ int Network::Server::receive()
     if (ret < 0)
         throw plazza::NetworkError("Error in poll", "Server");
     if (ret == 0)
-        return -1;
+        return {-1, client_status::NOK};
     size_t index = 0;
     for (auto &it: pfds) {
         if (it.revents & POLLIN) {
@@ -36,16 +36,16 @@ int Network::Server::receive()
 
             if (received == 0) {
                 this->closeClient(ids[index]);
-                return -1;
+                return {ids[index], client_status::DECO};
             }
             if (received != sizeof(data))
                 throw plazza::NetworkError("Data couldn't be correctly sent", "Server");
             this->_data = data;
-            return ids[index];
+            return {ids[index], client_status::OK};
         }
         index += 1;
     }
-    return -1;
+    return {-1, client_status::NOK};
 }
 
 bool Network::Server::send(const plazza::order_t &data)

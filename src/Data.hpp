@@ -17,6 +17,7 @@
 
 namespace plazza {
     enum PizzaType {
+        NO_PIZZA = 0,
         Regina = 1,
         Margarita = 2,
         Americana = 4,

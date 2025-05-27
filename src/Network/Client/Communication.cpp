@@ -18,10 +18,10 @@ bool Network::Client::send(const plazza::order_t &data)
 
 bool Network::Client::receive()
 {
-    ssize_t received = ::recv(this->_fd, &this->_data, sizeof(_data), 0);
+    ssize_t received = ::recv(this->_fd, &this->_data, sizeof(_data), MSG_DONTWAIT);
 
     if (received < 0)
-        throw plazza::NetworkError("Error while receiving data", "Client");
+        return false;
     if (received == 0)
         this->close();
     return received == sizeof(_data);

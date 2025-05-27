@@ -15,6 +15,17 @@
 
 namespace Network {
 
+enum class client_status: uint8_t {
+    OK,
+    NOK,
+    DECO
+};
+
+    typedef struct status_s {
+        int fd;
+        client_status status;
+    } status_t;
+
     typedef struct ClientInfo_s {
         int id;
         int clientFd;
@@ -28,7 +39,7 @@ namespace Network {
         ClientInfo_t acceptClient();
 
         bool send(const plazza::order_t &data);
-        [[nodiscard]] int receive();
+        [[nodiscard]] status_t receive();
 
         bool sendTo(int id, const plazza::order_t &data);
 
