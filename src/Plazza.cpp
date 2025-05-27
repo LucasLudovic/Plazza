@@ -104,6 +104,7 @@ void plazza::Plazza::updateKitchens()
         if (it != _kitchens.end()) {
             auto &orders = it->second;
             auto orderIt = std::find(orders.begin(), orders.end(), order);
+            std::cout << "size: " << order.size << "\ntype: " << order.type << "\nkitchen: " << id << std::endl;
             if (orderIt != orders.end()) {
                 orders.erase(orderIt);
             }
