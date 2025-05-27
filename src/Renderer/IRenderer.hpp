@@ -8,6 +8,9 @@
 #pragma once
 
 #include <iostream>
+#include <map>
+
+#include "Data.hpp"
 
 namespace plazza {
     class IRenderer
@@ -27,5 +30,6 @@ namespace plazza {
             virtual std::string &takeOrder() = 0;
 
             virtual void showError(const std::string &message) = 0;
+            virtual void showStatus(const std::map<int, std::vector<order_t>> &kitchens) = 0;
     };
 }

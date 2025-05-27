@@ -35,7 +35,8 @@ namespace plazza {
             bool shouldTakeOrder() override { return _takeOrder; }
             std::string &takeOrder() override;
 
-            void showError(const std::string &message) override;
+            void showError(const std::string &message);
+            void showStatus(const std::map<int, std::vector<order_t>> &) {}
 
         private:
             bool _takeOrder;

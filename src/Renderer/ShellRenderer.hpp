@@ -43,7 +43,8 @@ namespace plazza {
             bool shouldTakeOrder() override { return _takeOrder; }
             std::string &takeOrder() override;
 
-            void showError(const std::string &message) override { std::cerr << message << std::endl; }
+            void showError(const std::string &message) { std::cerr << message << std::endl; }
+            void showStatus(const std::map<int, std::vector<order_t>> &kitchens);
 
         private:
             std::atomic<bool> _shouldClose;
