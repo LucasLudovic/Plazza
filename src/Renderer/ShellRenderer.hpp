@@ -8,6 +8,7 @@
 #pragma once
 
 #include "IRenderer.hpp"
+#include "Plazza.hpp"
 
 /*
 ** EPITECH PROJECT, 2024
@@ -38,7 +39,7 @@ namespace plazza {
 
             void update() override;
 
-            void render() override;
+            void render(const plazza::Plazza &plazza) override;
 
             bool shouldTakeOrder() override { return _takeOrder; }
             std::string &takeOrder() override;

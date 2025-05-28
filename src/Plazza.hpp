@@ -33,6 +33,8 @@ namespace plazza {
 
         void run();
 
+        std::map<int, std::vector<order_t>> getKitchens() const { return this->_kitchens; };
+
        private:
         void errorHandling(int &argc, const char *const *&argv);
 

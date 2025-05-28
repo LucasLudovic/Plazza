@@ -13,6 +13,9 @@
 #include "Data.hpp"
 
 namespace plazza {
+
+    class Plazza;
+
     class IRenderer
     {
         public:
@@ -24,7 +27,7 @@ namespace plazza {
 
             virtual void update() = 0;
 
-            virtual void render() = 0;
+            virtual void render(const plazza::Plazza &plazza) = 0;
 
             virtual bool shouldTakeOrder() = 0;
             virtual std::string &takeOrder() = 0;
