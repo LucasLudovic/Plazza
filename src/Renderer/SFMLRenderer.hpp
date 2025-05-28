@@ -8,10 +8,10 @@
 #pragma once
 
 #include "IRenderer.hpp"
+#include "Plazza.hpp"
 #include "SFML/Graphics/Color.hpp"
 #include "SFML/Graphics/Font.hpp"
 #include "SFML/Graphics/Sprite.hpp"
-#include "SFML/Graphics/Text.hpp"
 #include "SFML/Graphics/Texture.hpp"
 #include "SFML/System/Vector2.hpp"
 
@@ -30,7 +30,7 @@ namespace plazza {
 
             void update() override;
 
-            void render() override;
+            void render(const plazza::Plazza &plazza) override;
 
             bool shouldTakeOrder() override { return _takeOrder; }
             std::string &takeOrder() override;
@@ -46,6 +46,8 @@ namespace plazza {
             sf::Font _font;
             sf::Texture _noteTexture;
             sf::Sprite _noteSprite;
+            sf::Texture _kitchenTexture;
             void _displayText(std::string str, sf::Vector2f pos, sf::Color color);
+            void _drawKitchen(int id, int nbCooks);
     };
 }

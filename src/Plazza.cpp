@@ -47,7 +47,7 @@ void plazza::Plazza::run()
                     e.where() + std::string(" Error: ") + e.what());
             }
         }
-        _renderer->render();
+        _renderer->render(*this);
     }
 }
 

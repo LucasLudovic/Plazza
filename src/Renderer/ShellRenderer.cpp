@@ -6,6 +6,7 @@
 */
 
 #include "ShellRenderer.hpp"
+#include "Plazza.hpp"
 
 plazza::ShellRenderer::ShellRenderer() :
     _shouldClose(false),
@@ -45,8 +46,10 @@ void plazza::ShellRenderer::inputLoop()
 void plazza::ShellRenderer::update()
 {}
 
-void plazza::ShellRenderer::render()
-{}
+void plazza::ShellRenderer::render(const plazza::Plazza &plazza)
+{
+    (void)plazza;
+}
 
 std::string &plazza::ShellRenderer::takeOrder()
 {
