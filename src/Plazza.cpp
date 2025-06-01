@@ -10,6 +10,7 @@
 #include "Kitchens/Kitchen.hpp"
 #include "Network/Client/Client.hpp"
 #include "Network/Server/Server.hpp"
+#include "PlazzaError.hpp"
 #include <iostream>
 
 plazza::Plazza::Plazza(int &argc, const char *const *&argv)
@@ -19,6 +20,10 @@ plazza::Plazza::Plazza(int &argc, const char *const *&argv)
     _cookingTimeMultiplier = std::stof(argv[1]);
     _cooks = std::stoi(argv[2]);
     _time = std::stoi(argv[3]);
+
+    if (this->_cooks <= 0 || this->_time <= 0 ||
+        this->_cookingTimeMultiplier <= 0)
+        throw PlazzaError("Wrong value for arguments", "Plazza");
 
     _server = Network::Server();
     _renderer = nullptr;
@@ -100,25 +105,20 @@ void plazza::Plazza::updateKitchens()
     auto id = status.fd;
 
     if (id != -1) {
-        std::cout << "Received order from kitchen: " << id << std::endl;
         const order_t order = this->_server.getData();
 
         auto it = _kitchens.find(id);
         if (it != _kitchens.end()) {
             auto &orders = it->second;
             auto orderIt = std::find(orders.begin(), orders.end(), order);
-            std::cout << "Ici" << std::endl;
             if (status.status != Network::client_status::OK ||
                 order.type == NO_PIZZA) {
                 if (orderIt != orders.end()) {
                     orders.erase(orderIt);
                 }
                 _kitchens.erase(it);
-                std::cout << "kitchen destroyed " << status.fd << std::endl;
                 return;
             }
-            std::cout << "size: " << order.size << "\ntype: " << order.type
-                      << "\nkitchen: " << id << std::endl;
             if (orderIt != orders.end()) {
                 orders.erase(orderIt);
             }
