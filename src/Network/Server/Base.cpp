@@ -67,7 +67,6 @@ const plazza::order_t &Network::Server::getData() const
 
 void Network::Server::removeClient(int id)
 {
-    std::cout << "id: " << this->_clients[id] << std::endl;
     if (this->_clients.find(id) == this->_clients.end()) {
         return;
     }

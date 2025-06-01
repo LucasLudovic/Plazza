@@ -17,6 +17,5 @@ int main(int argc, const char *const *argv)
         std::cerr << e.where() << " Error: " << e.what() << std::endl;
         return 84;
     }
-    std::cout << "Going to exit" << std::endl;
     return 0;
 }

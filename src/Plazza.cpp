@@ -275,9 +275,9 @@ void plazza::Plazza::createKitchen(
         Kitchen kitchen(info, cookingTimeMultiplier, cooks, time);
         kitchen.run();
     } catch (const IError &error) {
-        std::cout << error.where() << " error: " << error.what() << std::endl;
+        std::cerr << error.where() << " error: " << error.what() << std::endl;
     } catch (const std::exception &error) {
-        std::cout << "Error: " << error.what() << std::endl;
+        std::cerr << "Error: " << error.what() << std::endl;
     }
     exit(0);
 }
@@ -291,7 +291,6 @@ void plazza::Plazza::_destroyChilds()
         pid_t result = waitpid(it->first, &status, WNOHANG);
         if (result > 0 || result == -1) {
             it = this->_childs.erase(it);
-            std::cout << "Removing " << it->second << std::endl;
             this->_server.removeClient(it->second);
         } else {
             it++;
