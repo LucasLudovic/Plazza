@@ -20,7 +20,7 @@
 #include <map>
 #include <sstream>
 
-void plazza::SFMLRenderer::init()
+void plazza::SFMLRenderer::init(int nbCooks)
 {
     this->_window.create(sf::VideoMode({800, 600}), "Plazza");
     if (!this->_font.loadFromFile(
@@ -31,6 +31,7 @@ void plazza::SFMLRenderer::init()
     if (!this->_kitchenTexture.loadFromFile("./assets/restaurant.png"))
         throw plazza::PlazzaError("Failed to load restaurant", "SFML");
     this->_noteSprite.setTexture(this->_noteTexture);
+    this->_nbCooks = nbCooks;
 }
 
 void plazza::SFMLRenderer::update()

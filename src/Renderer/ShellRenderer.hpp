@@ -33,7 +33,7 @@ namespace plazza {
             ShellRenderer();
             ~ShellRenderer();
 
-            void init() override {}
+            void init(int nbCooks) override {this->_nbCooks = nbCooks;}
 
             bool shouldClose() override { return _shouldClose; }
 
@@ -55,6 +55,7 @@ namespace plazza {
             std::thread _inputThread;
             std::mutex _mutex;
 
+            int _nbCooks;
             void inputLoop();
     };
 }

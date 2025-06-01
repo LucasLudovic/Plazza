@@ -24,7 +24,7 @@ namespace plazza {
             SFMLRenderer() : _takeOrder(false) {}
             ~SFMLRenderer() = default;
 
-            void init() override;
+            void init(int nbCooks) override;
 
             bool shouldClose() override { return !_window.isOpen(); }
 
@@ -41,6 +41,7 @@ namespace plazza {
         private:
             bool _takeOrder;
             std::string _order;
+            int _nbCooks;
 
             sf::RenderWindow _window;
             sf::Font _font;

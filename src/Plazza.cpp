@@ -34,7 +34,7 @@ plazza::Plazza::Plazza(int &argc, const char *const *&argv)
     if (!_renderer)
         _renderer = std::make_unique<ShellRenderer>();
 
-    _renderer->init();
+    _renderer->init(this->_cooks);
 }
 
 void plazza::Plazza::run()

@@ -21,7 +21,7 @@ namespace plazza {
         public:
             virtual ~IRenderer() = default;
 
-            virtual void init() = 0;
+            virtual void init(int nbCooks) = 0;
 
             virtual bool shouldClose() = 0;
 

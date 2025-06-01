@@ -64,10 +64,12 @@ void plazza::ShellRenderer::showStatus(
 
     for (const auto &kitchen : kitchens) {
         std::cout << "Kitchen " << kitchen.first << ":" << std::endl;
-        size_t i = 1;
+        int i = 0;
         for (const auto &order : kitchen.second) {
-            std::cout << "cook: " << i;
-            std::cout << "  " << convertPizzaType(order.type) << "x "
+            std::cout << std::string(4, ' ');
+            if (i < this->_nbCooks)
+                std::cout << "Cook " << i + 1 << ": ";
+            std::cout << convertPizzaType(order.type) << "x "
                       << convertPizzaSize(order.size) << std::endl;
             i += 1;
         }
