@@ -181,7 +181,11 @@ void plazza::Plazza::parseOrder(std::string &order)
         }
 
         for (unsigned int i = 0; i < quantity; i++) {
-            _orders.push({convertPizzaType(name), convertPizzaSize(size), 0});
+            order_t newOrder;
+            newOrder.type = convertPizzaType(name);
+            newOrder.size = convertPizzaSize(size);
+            newOrder.cook = 0;
+            _orders.push(newOrder);
         }
     }
     order.clear();
@@ -262,7 +266,7 @@ void plazza::Plazza::createKitchen(
     if (pid == -1)
         throw plazza::PlazzaError("Failed to create kitchen", "Plazza");
     if (pid != 0) {
-        this->_childs.push_back(pid);
+        this->_childs[pid] = info.id;
         this->_kitchens[info.id] = {};
         return;
     }
@@ -284,12 +288,13 @@ void plazza::Plazza::_destroyChilds()
     auto it = this->_childs.begin();
     while (it != this->_childs.end()) {
         int status = 0;
-        pid_t result = waitpid(*it, &status, WNOHANG);
+        pid_t result = waitpid(it->first, &status, WNOHANG);
         if (result > 0 || result == -1) {
             it = this->_childs.erase(it);
-            std::cout << "child destroyed" << std::endl;
+            std::cout << "Removing " << it->second << std::endl;
+            this->_server.removeClient(it->second);
         } else {
-            it += 1;
+            it++;
         }
     }
 }

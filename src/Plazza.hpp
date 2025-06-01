@@ -55,7 +55,7 @@ namespace plazza {
         Network::Server _server;
         std::map<int, std::vector<order_t>> _kitchens;
         std::queue<order_t> _orders;
-        std::vector<pid_t> _childs;
+        std::map<pid_t, int> _childs;
 
         void _destroyChilds();
     };

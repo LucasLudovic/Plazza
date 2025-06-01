@@ -23,7 +23,6 @@ Network::Server::Server()
 
 Network::Server::~Server()
 {
-    this->closeAll();
 }
 
 void Network::Server::closeClient(int id)
@@ -31,13 +30,16 @@ void Network::Server::closeClient(int id)
     if (this->_clients.find(id) == this->_clients.end()) {
         return;
     }
-    ::close(this->_clients[id]);
+    if (this->_clients[id] > 0) {
+        ::close(this->_clients[id]);
+        this->_clients[id] = -1;
+    }
     this->_clients.erase(id);
 }
 
 void Network::Server::closeAll()
 {
-    for (const auto &it : this->_clients) {
+    for (auto &it : this->_clients) {
         this->closeClient(it.first);
     }
     this->_clients.clear();
@@ -61,4 +63,13 @@ Network::ClientInfo_t Network::Server::acceptClient()
 const plazza::order_t &Network::Server::getData() const
 {
     return this->_data;
+}
+
+void Network::Server::removeClient(int id)
+{
+    std::cout << "id: " << this->_clients[id] << std::endl;
+    if (this->_clients.find(id) == this->_clients.end()) {
+        return;
+    }
+    this->_clients.erase(id);
 }

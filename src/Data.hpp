@@ -56,6 +56,9 @@ namespace plazza {
         PizzaType type;
         PizzaSize size;
         uint8_t cook;
+
+        order_s() : type(NO_PIZZA), size(S), cook(0) {}
+        order_s(PizzaType type, PizzaSize size, uint8_t cook) : type(type), size(size), cook(cook) {}
     } order_t;
 
     inline bool operator==(const order_t &lhs, const order_t &rhs) {

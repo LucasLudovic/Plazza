@@ -43,6 +43,7 @@ namespace Network {
         std::vector<int> getIds();
         void closeClient(int id);
         void closeAll();
+        void removeClient(int id);
 
        private:
         std::map<int, int> _clients;
