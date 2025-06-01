@@ -11,6 +11,7 @@
 #include <list>
 #include <memory>
 #include <regex>
+#include <sched.h>
 #include <sstream>
 #include <unistd.h>
 #include <vector>
@@ -54,5 +55,8 @@ namespace plazza {
         Network::Server _server;
         std::map<int, std::vector<order_t>> _kitchens;
         std::queue<order_t> _orders;
+        std::vector<pid_t> _childs;
+
+        void _destroyChilds();
     };
 }  // namespace plazza

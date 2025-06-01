@@ -6,6 +6,7 @@
 */
 
 #include "ShellRenderer.hpp"
+#include "Data.hpp"
 #include "Plazza.hpp"
 
 plazza::ShellRenderer::ShellRenderer() : _shouldClose(false), _takeOrder(false)
@@ -54,6 +55,27 @@ std::string &plazza::ShellRenderer::takeOrder()
     return _order;
 }
 
+void plazza::ShellRenderer::_displayCook(int nbOrders, const std::vector<plazza::order_t> &orders)
+{
+    for (int i = 0; i < nbOrders && i < this->_nbCooks; i += 1) {
+        const auto &order = orders[i];
+        std::cout << std::string(4, ' ');
+        std::cout << "Cook " << i + 1 << ": ";
+        std::cout << convertPizzaType(order.type) << " "
+                  << convertPizzaSize(order.size) << std::endl;
+    }
+}
+
+void plazza::ShellRenderer::_displayQueue(int nbOrders, const std::vector<plazza::order_t> &orders)
+{
+    for (int i = this->_nbCooks; i < nbOrders; i += 1) {
+        const auto &order = orders[i];
+        std::cout << std::string(4, ' ');
+        std::cout << convertPizzaType(order.type) << " "
+                  << convertPizzaSize(order.size) << std::endl;
+    }
+}
+
 void plazza::ShellRenderer::showStatus(
     const std::map<int, std::vector<order_t>> &kitchens)
 {
@@ -64,14 +86,12 @@ void plazza::ShellRenderer::showStatus(
 
     for (const auto &kitchen : kitchens) {
         std::cout << "Kitchen " << kitchen.first << ":" << std::endl;
-        int i = 0;
-        for (const auto &order : kitchen.second) {
-            std::cout << std::string(4, ' ');
-            if (i < this->_nbCooks)
-                std::cout << "Cook " << i + 1 << ": ";
-            std::cout << convertPizzaType(order.type) << "x "
-                      << convertPizzaSize(order.size) << std::endl;
-            i += 1;
+        int nbOrders = kitchen.second.size();
+        this->_displayCook(nbOrders, kitchen.second);
+        this->_displayQueue(nbOrders, kitchen.second);
+        if (kitchen.second.empty()) {
+            std::cout << std::string(4, ' ') << "No active orders"
+                      << std::endl;
         }
     }
 }

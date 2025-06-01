@@ -7,11 +7,17 @@
 
 #include "Plazza.hpp"
 #include "Data.hpp"
+#include "IError.hpp"
+#include "KitchenError.hpp"
 #include "Kitchens/Kitchen.hpp"
 #include "Network/Client/Client.hpp"
 #include "Network/Server/Server.hpp"
 #include "PlazzaError.hpp"
+#include <csignal>
+#include <exception>
 #include <iostream>
+#include <ostream>
+#include <sys/wait.h>
 
 plazza::Plazza::Plazza(int &argc, const char *const *&argv)
 {
@@ -42,6 +48,7 @@ void plazza::Plazza::run()
     while (!_renderer->shouldClose()) {
         _renderer->update();
 
+        this->_destroyChilds();
         updateKitchens();
         if (_renderer->shouldTakeOrder()) {
             try {
@@ -255,11 +262,34 @@ void plazza::Plazza::createKitchen(
     if (pid == -1)
         throw plazza::PlazzaError("Failed to create kitchen", "Plazza");
     if (pid != 0) {
-        _kitchens[info.id] = {};
+        this->_childs.push_back(pid);
+        this->_kitchens[info.id] = {};
         return;
     }
 
-    Kitchen kitchen(info, cookingTimeMultiplier, cooks, time);
-    kitchen.run();
+    try {
+        Kitchen kitchen(info, cookingTimeMultiplier, cooks, time);
+        kitchen.run();
+    } catch (const IError &error) {
+        std::cout << error.where() << " error: " << error.what() << std::endl;
+    } catch (const std::exception &error) {
+        std::cout << "Error: " << error.what() << std::endl;
+    }
     exit(0);
+}
+
+void plazza::Plazza::_destroyChilds()
+{
+
+    auto it = this->_childs.begin();
+    while (it != this->_childs.end()) {
+        int status = 0;
+        pid_t result = waitpid(*it, &status, WNOHANG);
+        if (result > 0 || result == -1) {
+            it = this->_childs.erase(it);
+            std::cout << "child destroyed" << std::endl;
+        } else {
+            it += 1;
+        }
+    }
 }

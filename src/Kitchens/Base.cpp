@@ -73,4 +73,5 @@ void plazza::Kitchen::run()
     if (restockThread.joinable()) {
         restockThread.join();
     }
+    exit(0);
 }
