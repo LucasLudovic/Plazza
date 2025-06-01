@@ -15,11 +15,7 @@
 
 namespace Network {
 
-enum class client_status: uint8_t {
-    OK,
-    NOK,
-    DECO
-};
+    enum class client_status : uint8_t { OK, NOK, DECO };
 
     typedef struct status_s {
         int fd;

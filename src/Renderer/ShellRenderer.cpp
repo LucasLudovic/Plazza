@@ -8,9 +8,7 @@
 #include "ShellRenderer.hpp"
 #include "Plazza.hpp"
 
-plazza::ShellRenderer::ShellRenderer() :
-    _shouldClose(false),
-    _takeOrder(false)
+plazza::ShellRenderer::ShellRenderer() : _shouldClose(false), _takeOrder(false)
 {
     _inputThread = std::thread(&ShellRenderer::inputLoop, this);
 }
@@ -43,8 +41,7 @@ void plazza::ShellRenderer::inputLoop()
     }
 }
 
-void plazza::ShellRenderer::update()
-{}
+void plazza::ShellRenderer::update() {}
 
 void plazza::ShellRenderer::render(const plazza::Plazza &plazza)
 {
@@ -57,7 +54,8 @@ std::string &plazza::ShellRenderer::takeOrder()
     return _order;
 }
 
-void plazza::ShellRenderer::showStatus(const std::map<int, std::vector<order_t>> &kitchens)
+void plazza::ShellRenderer::showStatus(
+    const std::map<int, std::vector<order_t>> &kitchens)
 {
     if (kitchens.empty()) {
         std::cout << "No kitchens available" << std::endl;
@@ -66,8 +64,12 @@ void plazza::ShellRenderer::showStatus(const std::map<int, std::vector<order_t>>
 
     for (const auto &kitchen : kitchens) {
         std::cout << "Kitchen " << kitchen.first << ":" << std::endl;
+        size_t i = 1;
         for (const auto &order : kitchen.second) {
-            std::cout << "  " << convertPizzaType(order.type) << "x " << convertPizzaSize(order.size) << std::endl;
+            std::cout << "cook: " << i;
+            std::cout << "  " << convertPizzaType(order.type) << "x "
+                      << convertPizzaSize(order.size) << std::endl;
+            i += 1;
         }
     }
 }

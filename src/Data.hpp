@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -54,6 +55,7 @@ namespace plazza {
     typedef struct order_s {
         PizzaType type;
         PizzaSize size;
+        uint8_t cook;
     } order_t;
 
     inline bool operator==(const order_t &lhs, const order_t &rhs) {

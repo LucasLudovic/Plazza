@@ -44,6 +44,7 @@ plazza::Cooks::Cooks(
                         std::chrono::milliseconds(cookingTime));
 
                     plazza::order_t completedOrder = order;
+                    completedOrder.cook = i;
                     if (!this->_client.send(completedOrder)) {
                         throw CookError(
                             "Failed to send completed order", "Cooks");

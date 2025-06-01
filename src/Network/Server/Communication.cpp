@@ -20,7 +20,7 @@ Network::status_t Network::Server::receive()
     const int timeout = 1000;
 
     std::vector<struct pollfd> pfds = this->_getPfds();
-    std::vector <int> ids = this->getIds();
+    std::vector<int> ids = this->getIds();
 
     int ret = poll(pfds.data(), pfds.size(), timeout);
 
@@ -29,7 +29,7 @@ Network::status_t Network::Server::receive()
     if (ret == 0)
         return {-1, client_status::NOK};
     size_t index = 0;
-    for (auto &it: pfds) {
+    for (auto &it : pfds) {
         if (it.revents & POLLIN) {
             plazza::order_t data;
             size_t received = recv(it.fd, &data, sizeof(data), 0);
@@ -39,7 +39,8 @@ Network::status_t Network::Server::receive()
                 return {ids[index], client_status::DECO};
             }
             if (received != sizeof(data))
-                throw plazza::NetworkError("Data couldn't be correctly sent", "Server");
+                throw plazza::NetworkError(
+                    "Data couldn't be correctly sent", "Server");
             this->_data = data;
             return {ids[index], client_status::OK};
         }
@@ -72,7 +73,7 @@ std::vector<struct pollfd> Network::Server::_getPfds()
 {
     std::vector<struct pollfd> pfds;
 
-    for (const auto &[clientId, fd]: this->_clients) {
+    for (const auto &[clientId, fd] : this->_clients) {
         struct pollfd pfd;
         pfd.fd = fd;
         pfd.events = POLLIN | POLLHUP;
@@ -87,7 +88,7 @@ std::vector<int> Network::Server::getIds()
 {
     std::vector<int> ids;
 
-    for (const auto &[clientId, fd]: this->_clients) {
+    for (const auto &[clientId, fd] : this->_clients) {
         ids.push_back(clientId);
     }
 

@@ -66,7 +66,7 @@ void plazza::Kitchen::run()
                 break;
         }
     }
-    if (!client.send({NO_PIZZA, S}))
+    if (!client.send({NO_PIZZA, S, 0}))
         throw KitchenError("Unable to close kitchen", "Kitchen");
 
     stop.store(true);

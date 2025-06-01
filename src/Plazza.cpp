@@ -174,7 +174,7 @@ void plazza::Plazza::parseOrder(std::string &order)
         }
 
         for (unsigned int i = 0; i < quantity; i++) {
-            _orders.push({convertPizzaType(name), convertPizzaSize(size)});
+            _orders.push({convertPizzaType(name), convertPizzaSize(size), 0});
         }
     }
     order.clear();
